@@ -22,7 +22,7 @@
      <x>10</x>
      <y>10</y>
      <width>341</width>
-     <height>231</height>
+     <height>275</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
@@ -165,9 +165,9 @@ color: rgb(255, 255, 255);</string>
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>590</x>
+     <x>555</x>
      <y>620</y>
-     <width>211</width>
+     <width>281</width>
      <height>31</height>
     </rect>
    </property>
@@ -198,9 +198,9 @@ color: rgb(255, 255, 255);</string>
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>250</y>
-     <width>121</width>
-     <height>101</height>
+     <y>290</y>
+     <width>111</width>
+     <height>151</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">

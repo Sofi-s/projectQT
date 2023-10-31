@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QDialog, QPushButton, QSlider, QVBoxLayout, QWidget, QFileDialog, QLabel
 from PyQt5.QtGui import QPixmap, QImage, QColor, qRgb, QTransform
 from PyQt5.QtCore import Qt
-from PyQt5 import uic
+from PyQt5 import uic, QtCore
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 
 
@@ -24,44 +24,48 @@ class ImageProcessor(QDialog):
         self.izobr.setPixmap(self.pixmap)
         self.izobr.setStyleSheet("background-color: gray;")
         self.angle = 0
-
-       #for button in self.channelButtons.buttons():
+        self.horizontalSlider_3.setMinimum(0)
+        self.horizontalSlider_3.setMaximum(255)
+        self.horizontalSlider_3.setValue(255)
+        #self.slider.valueChanged.connect(self.visibility)
+        # for button in self.channelButtons.buttons():
 
         #   self.yarkost.clicked.connect(self.adjustBrightness)
-      # #  self.horizontalSlider.valueChanged.connect(self.adjustBrightness)
-      #   self.razmutie.clicked.connect(self.blurImage)
-      #   self.horizontalSlider_2.valueChanged.connect(self.blurImage)
-      #
-      #   # self.prozrachnost.clicked.connect(self.prozrachnost)
-      #   self.horizontalSlider_3.valueChanged.connect(self.adjustTransparency)
-      #   self.alpha = self.findChild(QSlider, 'horizontalSlider_3')
-      #   self.alpha.valueChanged[int].connect(self.adjustTransparency)
-      #
-      #   self.sepeia.clicked.connect(self.applySepia)
-      #   self.horizontalSlider_4.valueChanged.connect(self.applySepia)
-      #
+        # #  self.horizontalSlider.valueChanged.connect(self.adjustBrightness)
+        #   self.razmutie.clicked.connect(self.blurImage)
+        #   self.horizontalSlider_2.valueChanged.connect(self.blurImage)
+        #
+        #   # self.prozrachnost.clicked.connect(self.prozrachnost)
+        self.horizontalSlider_3.valueChanged[int].connect(self.adjustTransparency)
+        #   self.alpha = self.findChild(QSlider, 'horizontalSlider_3')
+        #   self.alpha.valueChanged[int].connect(self.adjustTransparency)
+        #
+        #   self.sepeia.clicked.connect(self.applySepia)
+        #   self.horizontalSlider_4.valueChanged.connect(self.applySepia)
+        #
 
         self.blue.clicked.connect(self.channel)
         self.hb.clicked.connect(self.channel)
         self.yellow.clicked.connect(self.channel)
-      #   self.horizontalSlider_5.valueChanged.connect(self.applyCyanotype)
-      #
-      #   self.negative.clicked.connect(self.applyNegative)
-      #   self.horizontalSlider_6.valueChanged.connect(self.applyNegative)
-      #
-      #   self.yellow.clicked.connect(self.applyYellowEffect)
-      #   self.horizontalSlider_7.valueChanged.connect(self.applyYellowEffect)
-      #
-      #   self.hb.clicked.connect(self.applyGrayscale)
-      #   self.horizontalSlider_8.valueChanged.connect(self.applyGrayscale)
-      #
-      #   self.pravos.clicked.connect(self.rotate)
-      #   self.pravod.clicked.connect(self.rotate)
-      #   self.levod.clicked.connect(self.rotate)
-      #   self.image.setPixmap(self.pixmap)
-      #   r = QTransform().rotate(self.angle)
+        #   self.horizontalSlider_5.valueChanged.connect(self.applyCyanotype)
+        #
+        #   self.negative.clicked.connect(self.applyNegative)
+        #   self.horizontalSlider_6.valueChanged.connect(self.applyNegative)
+        #
+        #   self.yellow.clicked.connect(self.applyYellowEffect)
+        #   self.horizontalSlider_7.valueChanged.connect(self.applyYellowEffect)
+        #
+        #   self.hb.clicked.connect(self.applyGrayscale)
+        #   self.horizontalSlider_8.valueChanged.connect(self.applyGrayscale)
+        #
+        #   self.pravos.clicked.connect(self.rotate)
+        #   self.pravod.clicked.connect(self.rotate)
+        #   self.levod.clicked.connect(self.rotate)
+        #   self.image.setPixmap(self.pixmap)
+        #   r = QTransform().rotate(self.angle)
         self.pushButton_10.clicked.connect(self.openImage)
-      #   self.pushButton_9.clicked.connect(self.saveImage)
+
+    #   self.pushButton_9.clicked.connect(self.saveImage)
 
     def loadImage(self, path):
         self.image = Image.open(path)
@@ -74,7 +78,7 @@ class ImageProcessor(QDialog):
         if self.image is not None:
             qImg = QImage(self.image.tobytes("raw", "RGBA"), self.image.width, self.image.height,
                           QImage.Format_RGBA8888)
-            pixmap = QPixmap.fromImage(qImg)
+            pixmap = QPixmap.fromImage(qImg).scaled(640, 640, QtCore.Qt.KeepAspectRatio)
             self.izobr.setPixmap(pixmap)  # Убрали self.ui.
 
     def adjustBrightness(self):
@@ -99,16 +103,42 @@ class ImageProcessor(QDialog):
             self.displayImage(blurred_image)
 
     def adjustTransparency(self, value):
+        print(value)
         try:
             if self.image:
-                self.alpha.setValue(255)
-                self.alpha.setMinimum(0)
-                self.alpha.setMaximum(255)
-                transp = int(self.alpha.value())
-                img = self.image_path
+                #transp = int(value)
+                transp = int(self.horizontalSlider_3.value())
+                # img = (self.file_name)
+                img = Image.open(self.image_path)
+                img = img.convert('RGBA')
                 img.putalpha(transp)
                 self.pixmap = QPixmap(self.image_path)
                 self.image = self.pixmap
+
+
+        except Exception as e:
+            print(e)
+
+        # def prozrachnost(self, value):
+        #     try:
+        #         transp = int(self.alpha.value())
+        #         img = Image.open(self.file_name)
+        #         img.putalpha(transp)
+        #         img.save(self.new_file_name)
+        #         self.pixmap = QPixmap(self.new_file_name)
+        #         self.gogl.setPixmap(self.pixmap)
+        #     except Exception as e:
+        #         print(e)
+
+
+    def prozrachnost(self, value):
+        try:
+            transp = int(self.alpha.value())
+            img = Image.open(self.file_name)
+            img.putalpha(transp)
+            img.save(self.new_file_name)
+            self.pixmap = QPixmap(self.new_file_name)
+            self.gogl.setPixmap(self.pixmap)
         except Exception as e:
             print(e)
 
@@ -128,11 +158,11 @@ class ImageProcessor(QDialog):
             for j in range(y):
                 yellow, hb, blue, _ = self.curr_image.pixelColor(i, j).getRgb()
 
-
         r = QTransform().rotate(self.angle)
         self.curr_image = self.curr_image.transformed(r)
         self.pixmap = QPixmap.fromImage(self.curr_image)
         self.izobr.setPixmap(self.pixmap)
+        self.loadImage(self.image_path)
 
     def applyCyanotype(self):
         if self.image is not None:
