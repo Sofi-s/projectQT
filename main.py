@@ -130,17 +130,17 @@ class ImageProcessor(QDialog):
         #     except Exception as e:
         #         print(e)
 
-
-    def prozrachnost(self, value):
-        try:
-            transp = int(self.alpha.value())
-            img = Image.open(self.file_name)
-            img.putalpha(transp)
-            img.save(self.new_file_name)
-            self.pixmap = QPixmap(self.new_file_name)
-            self.gogl.setPixmap(self.pixmap)
-        except Exception as e:
-            print(e)
+    #
+    # def prozrachnost(self, value):
+    #     try:
+    #         transp = int(self.alpha.value())
+    #         img = Image.open(self.file_name)
+    #         img.putalpha(transp)
+    #         img.save(self.new_file_name)
+    #         self.pixmap = QPixmap(self.new_file_name)
+    #         self.gogl.setPixmap(self.pixmap)
+    #     except Exception as e:
+    #         print(e)
 
     def applySepia(self):
         if self.image is not None:
