@@ -78,7 +78,7 @@ class ImageProcessor(QDialog):
         if self.image is not None:
             qImg = QImage(self.image.tobytes("raw", "RGBA"), self.image.width, self.image.height,
                           QImage.Format_RGBA8888)
-            pixmap = QPixmap.fromImage(qImg).scaled(640, 640, QtCore.Qt.KeepAspectRatio)
+            pixmap = QPixmap.fromImage(qImg).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
             self.izobr.setPixmap(pixmap)  # Убрали self.ui.
 
     def adjustBrightness(self):
