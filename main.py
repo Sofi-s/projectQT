@@ -4,6 +4,7 @@ from PyQt5.QtGui import QPixmap, QImage, QColor, qRgb, QTransform
 from PyQt5.QtCore import Qt
 from PyQt5 import uic, QtCore
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps, ImageDraw
+import sqlite3
 
 
 class ImageProcessor(QDialog):
@@ -71,11 +72,13 @@ class ImageProcessor(QDialog):
         #   r = QTransform().rotate(self.angle)
         # self.pushButton_10.clicked.connect(self.openImage)
 
-    #   self.pushButton_9.clicked.connect(self.saveImage)
+        self.pushButton_9.clicked.connect(self.saveImage)
 
     def loadImage(self, path):
         self.image = Image.open(path).resize(430, 430)
         self.displayImage()
+
+    # def bd(self):
 
     def displayImage(self, processed_image=None):
         print(0)
@@ -229,14 +232,10 @@ class ImageProcessor(QDialog):
             self.image = yellow_image
 
     def saveImage(self):
-        if self.image is not None:
-            options = QFileDialog.Options()
-            options |= QFileDialog.ReadOnly
-            file_path, _ = QFileDialog.getSaveFileName(self, "Save Image File", "",
-                                                       "Images (*.png *.jpg *.bmp *.jpeg *.gif *.tiff);;All Files (*)",
-                                                       options=options)
-            if file_path:
-                self.image.save(file_path)
+        print(0)
+
+        img = Image.open(self.new_file_name)
+        img.save(QFileDialog.getSaveFileName(self, 'Выберите картинку', '', 'Картинки (*.jpg)')[0])
 
     def rotate(self):
         with Image.open(self.new_file_name) as im:
