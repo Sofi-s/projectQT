@@ -1,5 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QDialog, QPushButton, QSlider, QVBoxLayout, QWidget, QFileDialog, QLabel
+from PyQt5.QtWidgets import QApplication, QDialog, QPushButton, QSlider, QVBoxLayout, QWidget, QFileDialog, QLabel, \
+    QTableWidgetItem
 from PyQt5.QtGui import QPixmap, QImage, QColor, qRgb, QTransform
 from PyQt5.QtCore import Qt
 from PyQt5 import uic, QtCore
@@ -33,6 +34,8 @@ class ImageProcessor(QDialog):
         self.horizontalSlider_4.setMinimum(0)
         self.horizontalSlider_4.setMaximum(4)
         self.horizontalSlider_4.setValue(0)
+        self.con = sqlite3.connect("db.sqlite")
+        self.bd()
 
         # self.slider.valueChanged.connect(self.visibility)
         # for button in self.channelButtons.buttons():
@@ -129,22 +132,36 @@ class ImageProcessor(QDialog):
 
     def bd(self):
 
-        connection = sqlite3.connect('my_database.db')
-        cursor = connection.cursor()
+        cur = self.con.cursor()
+        que = "SELECT * FROM filters"
+        try:
+            result = cur.execute(que).fetchall()
+            # Заполнили размеры таблицы
+            self.tableWidget.setRowCount(len(result))
+            self.tableWidget.setColumnCount(len(result[0]))
 
-        # Создаем таблицу Users
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS Users (
-        id INTEGER PRIMARY KEY,
-        username TEXT NOT NULL,
-        email TEXT NOT NULL,
-        age INTEGER
-        )
-        ''')
-
-        # Сохраняем изменения и закрываем соединение
-        connection.commit()
-        connection.close()
+            # Заполнили таблицу полученными элементами
+            for i, elem in enumerate(result):
+                for j, val in enumerate(elem):
+                    self.tableWidget.setItem(i, j, QTableWidgetItem(str(val)))
+            # self.statusbar.showMessage("")
+        except Exception:
+            print("По этому запросу ничего не найдено")
+            # self.statusbar.showMessage()
+    #
+    #     # Создаем таблицу Users
+    #     cursor.execute('''
+    #     CREATE TABLE IF NOT EXISTS Users (
+    #     id INTEGER PRIMARY KEY,
+    #     username TEXT NOT NULL,
+    #     email TEXT NOT NULL,
+    #     age INTEGER
+    #     )
+    #     ''')
+    #
+    #     # Сохраняем изменения и закрываем соединение
+    #     connection.commit()
+    #     connection.close()
 
 
     def applySepia(self):
