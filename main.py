@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QApplication, QDialog, QPushButton, QSlider, QVBoxLa
 from PyQt5.QtGui import QPixmap, QImage, QColor, qRgb, QTransform
 from PyQt5.QtCore import Qt
 from PyQt5 import uic, QtCore
-from PIL import Image, ImageEnhance, ImageFilter, ImageOps
+from PIL import Image, ImageEnhance, ImageFilter, ImageOps, ImageDraw
 
 
 class ImageProcessor(QDialog):
@@ -29,6 +29,10 @@ class ImageProcessor(QDialog):
         self.horizontalSlider_3.setMinimum(0)
         self.horizontalSlider_3.setMaximum(255)
         self.horizontalSlider_3.setValue(255)
+        self.horizontalSlider_4.setMinimum(0)
+        self.horizontalSlider_4.setMaximum(4)
+        self.horizontalSlider_4.setValue(0)
+
         # self.slider.valueChanged.connect(self.visibility)
         # for button in self.channelButtons.buttons():
 
@@ -42,8 +46,8 @@ class ImageProcessor(QDialog):
         #   self.alpha = self.findChild(QSlider, 'horizontalSlider_3')
         #   self.alpha.valueChanged[int].connect(self.adjustTransparency)
         #
-        #   self.sepeia.clicked.connect(self.applySepia)
-        #   self.horizontalSlider_4.valueChanged.connect(self.applySepia)
+        self.sepeia.clicked.connect(self.applySepia)
+        self.horizontalSlider_4.valueChanged.connect(self.applySepias)
         #
 
         self.blue.clicked.connect(self.channel)
@@ -65,7 +69,7 @@ class ImageProcessor(QDialog):
         #   self.levod.clicked.connect(self.rotate)
         #   self.image.setPixmap(self.pixmap)
         #   r = QTransform().rotate(self.angle)
-        #self.pushButton_10.clicked.connect(self.openImage)
+        # self.pushButton_10.clicked.connect(self.openImage)
 
     #   self.pushButton_9.clicked.connect(self.saveImage)
 
@@ -107,9 +111,7 @@ class ImageProcessor(QDialog):
             self.displayImage(blurred_image)
 
     def adjustTransparency(self, value):
-        print(value)
         try:
-            # if self.image:
             transp = int(self.horizontalSlider_3.value())
             img = Image.open(self.new_file_name)
             img = img.convert('RGBA')
@@ -133,23 +135,66 @@ class ImageProcessor(QDialog):
         #     except Exception as e:
         #         print(e)
 
-
-    # def applySepia(self):
-    #     if self.image is not None:
-    #         sepia_image = ImageOps.colorize(self.image.convert("L"), "#704214", "#C0A080")
-    #         self.addToHistory('Applied Sepia Effect')
-    #
-    #         self.image_path = self.displayImage(sepia_image)
-
     def applySepia(self):
-        if self.image is not None:
-            with Image.open(self.filename) as im:
-                self.sepia_image = im.convert("L")  # Преобразуем изображение в оттенки серого
-                self.sepia_image = self.sepia_image.filter(ImageFilter.SEPIA)
-                self.sepia_image.show()
-                # Сохраняем изображение с эффектом сепии
-                # sepia_image.save("sepia_image.jpg")
-                # sepia_image = ImageOps.colorize(self.image.convert("L"), "#704214", "#C0A080")
+        try:
+            with Image.open(self.new_file_name) as im:
+                pix = im.load()
+                draw = ImageDraw.Draw(im)
+                width = im.size[0]
+                height = im.size[1]
+                for i in range(width):
+                    for j in range(height):
+                        a = pix[i, j][0]
+                        b = pix[i, j][1]
+                        c = pix[i, j][2]
+                        S = (a + b + c) // 4
+                        a = S + 75 * 2
+                        b = S + 75
+                        c = S
+                        if (a > 255):
+                            a = 255
+                        if (b > 255):
+                            b = 255
+                        if (c > 255):
+                            c = 255
+                        draw.point((i, j), (a, b, c))
+                im.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+        except Exception as e:
+            print(e)
+
+    def applySepias(self, value):
+        try:
+            transp = int(self.horizontalSlider_4.value())
+            img = Image.open(self.new_file_name)
+            # img = img.convert('RGBA')
+            img.putalpha(transp)
+            pix = img.load()
+            draw = ImageDraw.Draw(img)
+            width = img.size[0]
+            height = img.size[1]
+            for i in range(width):
+                for j in range(height):
+                    a = pix[i, j][0]
+                    b = pix[i, j][1]
+                    c = pix[i, j][2]
+                    S = (a + b + c) // transp
+                    a = S + 75 * 2
+                    b = S + 75
+                    c = S
+                    if (a > 255):
+                        a = 255
+                    if (b > 255):
+                        b = 255
+                    if (c > 255):
+                        c = 255
+                    draw.point((i, j), (a, b, c))
+            img.save(self.new_file_name)
+            self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+            self.izobr.setPixmap(self.pixmap)
+        except Exception as e:
+            print(e)
 
     def channel(self):
 
@@ -178,7 +223,6 @@ class ImageProcessor(QDialog):
             self.addToHistory('Applied Negative Effect')
             self.displayImage(negative_image)
 
-
     def applyYellowEffect(self):
         if self.image is not None:
             yellow_image = ImageOps.colorize(self.image.convert("L"), "#FFFF00", "#FFFF99")
@@ -203,11 +247,8 @@ class ImageProcessor(QDialog):
 
             if self.sender() is self.pravos:
                 self.image = im.rotate(180)
-                # self.image.show()
-
             if self.sender() is self.levod:
                 self.image = im.rotate(270)
-                # self.image.show()
             self.image.save(self.new_file_name)
             self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
             self.izobr.setPixmap(self.pixmap)
