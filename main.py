@@ -13,12 +13,13 @@ class ImageProcessor(QDialog):
         uic.loadUi('photoshop2.ui', self)
         self.image = None
         self.image_path = None
-        #self.filename = self.image_path
+        self.new_file_name = "new.png"
         self.filename = QFileDialog.getOpenFileName(self, 'Выберите картинку', '', 'Картинки (*.jpg)')[0]
-        self.orig_image = QImage(self.filename)
-        self.curr_image = self.orig_image.copy()
-        self.pixmap = QPixmap.fromImage(self.curr_image)
+        img = Image.open(self.filename)
+        img.save(self.new_file_name)
+        self.pixmap = QPixmap(self.filename).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
         self.izobr.setPixmap(self.pixmap)
+        # self.displayImage()
         self.pravos.clicked.connect(self.rotate)
         self.levod.clicked.connect(self.rotate)
         self.pravod.clicked.connect(self.rotate)
@@ -69,14 +70,16 @@ class ImageProcessor(QDialog):
     #   self.pushButton_9.clicked.connect(self.saveImage)
 
     def loadImage(self, path):
-        self.image = Image.open(path)
+        self.image = Image.open(path).resize(430, 430)
         self.displayImage()
 
     def displayImage(self, processed_image=None):
+        print(0)
         if processed_image is not None:
             self.image = processed_image
 
         if self.image is not None:
+            print("d")
             qImg = QImage(self.image.tobytes("raw", "RGBA"), self.image.width, self.image.height,
                           QImage.Format_RGBA8888)
             pixmap = QPixmap.fromImage(qImg).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
@@ -106,15 +109,14 @@ class ImageProcessor(QDialog):
     def adjustTransparency(self, value):
         print(value)
         try:
-            if self.image:
-                # transp = int(value)
-                transp = int(self.horizontalSlider_3.value())
-                # img = (self.file_name)
-                img = Image.open(self.image_path)
-                img = img.convert('RGBA')
-                img.putalpha(transp)
-                self.pixmap = QPixmap(self.image_path)
-                self.image = self.pixmap
+            # if self.image:
+            transp = int(self.horizontalSlider_3.value())
+            img = Image.open(self.new_file_name)
+            img = img.convert('RGBA')
+            img.putalpha(transp)
+            img.save(self.new_file_name)
+            self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+            self.izobr.setPixmap(self.pixmap)
 
 
         except Exception as e:
@@ -131,24 +133,23 @@ class ImageProcessor(QDialog):
         #     except Exception as e:
         #         print(e)
 
+
+    # def applySepia(self):
+    #     if self.image is not None:
+    #         sepia_image = ImageOps.colorize(self.image.convert("L"), "#704214", "#C0A080")
+    #         self.addToHistory('Applied Sepia Effect')
     #
-    # def prozrachnost(self, value):
-    #     try:
-    #         transp = int(self.alpha.value())
-    #         img = Image.open(self.file_name)
-    #         img.putalpha(transp)
-    #         img.save(self.new_file_name)
-    #         self.pixmap = QPixmap(self.new_file_name)
-    #         self.gogl.setPixmap(self.pixmap)
-    #     except Exception as e:
-    #         print(e)
+    #         self.image_path = self.displayImage(sepia_image)
 
     def applySepia(self):
         if self.image is not None:
-            sepia_image = ImageOps.colorize(self.image.convert("L"), "#704214", "#C0A080")
-            self.addToHistory('Applied Sepia Effect')
-
-            self.image_path = self.displayImage(sepia_image)
+            with Image.open(self.filename) as im:
+                self.sepia_image = im.convert("L")  # Преобразуем изображение в оттенки серого
+                self.sepia_image = self.sepia_image.filter(ImageFilter.SEPIA)
+                self.sepia_image.show()
+                # Сохраняем изображение с эффектом сепии
+                # sepia_image.save("sepia_image.jpg")
+                # sepia_image = ImageOps.colorize(self.image.convert("L"), "#704214", "#C0A080")
 
     def channel(self):
 
@@ -194,19 +195,22 @@ class ImageProcessor(QDialog):
                 self.image.save(file_path)
 
     def rotate(self):
-        with Image.open(self.filename) as im:
+        with Image.open(self.new_file_name) as im:
 
             if self.sender() is self.pravod:
                 self.image = im.rotate(90)
-                self.image.show()
+                # self.image.show()
 
             if self.sender() is self.pravos:
                 self.image = im.rotate(180)
-                self.image.show()
+                # self.image.show()
 
             if self.sender() is self.levod:
                 self.image = im.rotate(270)
-                self.image.show()
+                # self.image.show()
+            self.image.save(self.new_file_name)
+            self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+            self.izobr.setPixmap(self.pixmap)
 
 
 if __name__ == "__main__":
