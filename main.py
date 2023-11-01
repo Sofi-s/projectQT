@@ -13,7 +13,8 @@ class ImageProcessor(QDialog):
         uic.loadUi('photoshop2.ui', self)
         self.image = None
         self.image_path = None
-        self.filename = self.image_path
+        #self.filename = self.image_path
+        self.filename = QFileDialog.getOpenFileName(self, 'Выберите картинку', '', 'Картинки (*.jpg)')[0]
         self.orig_image = QImage(self.filename)
         self.curr_image = self.orig_image.copy()
         self.pixmap = QPixmap.fromImage(self.curr_image)
@@ -27,7 +28,7 @@ class ImageProcessor(QDialog):
         self.horizontalSlider_3.setMinimum(0)
         self.horizontalSlider_3.setMaximum(255)
         self.horizontalSlider_3.setValue(255)
-        #self.slider.valueChanged.connect(self.visibility)
+        # self.slider.valueChanged.connect(self.visibility)
         # for button in self.channelButtons.buttons():
 
         #   self.yarkost.clicked.connect(self.adjustBrightness)
@@ -63,7 +64,7 @@ class ImageProcessor(QDialog):
         #   self.levod.clicked.connect(self.rotate)
         #   self.image.setPixmap(self.pixmap)
         #   r = QTransform().rotate(self.angle)
-        self.pushButton_10.clicked.connect(self.openImage)
+        #self.pushButton_10.clicked.connect(self.openImage)
 
     #   self.pushButton_9.clicked.connect(self.saveImage)
 
@@ -106,7 +107,7 @@ class ImageProcessor(QDialog):
         print(value)
         try:
             if self.image:
-                #transp = int(value)
+                # transp = int(value)
                 transp = int(self.horizontalSlider_3.value())
                 # img = (self.file_name)
                 img = Image.open(self.image_path)
@@ -176,14 +177,6 @@ class ImageProcessor(QDialog):
             self.addToHistory('Applied Negative Effect')
             self.displayImage(negative_image)
 
-    def openImage(self):
-        options = QFileDialog.Options()
-
-        self.image_path, _ = QFileDialog.getOpenFileName(self, "Open Image File", "",
-                                                         "Images (*.png *.jpg *.bmp *.jpeg *.gif *.tiff);;All Files (*)",
-                                                         options=options)
-        if self.image_path:
-            self.loadImage(self.image_path)
 
     def applyYellowEffect(self):
         if self.image is not None:
@@ -201,24 +194,19 @@ class ImageProcessor(QDialog):
                 self.image.save(file_path)
 
     def rotate(self):
-        if self.sender() is self.pravod:
-            self.angle += 90
-            rotation_angle = 90
-        elif self.sender() is self.levod:
-            self.angle -= 90
-            rotation_angle = -90
-        elif self.sender() is self.pravos:
-            self.angle -= 180
-            rotation_angle = -180
-        else:
-            rotation_angle = 0
+        with Image.open(self.filename) as im:
 
-        self.angle += rotation_angle
-        self.angle %= 360
-        r = QTransform().rotate(self.angle)
-        self.curr_image = self.curr_image.transformed(r)
-        self.pixmap = QPixmap.fromImage(self.curr_image)
-        self.izobr.setPixmap(self.pixmap)
+            if self.sender() is self.pravod:
+                self.image = im.rotate(90)
+                self.image.show()
+
+            if self.sender() is self.pravos:
+                self.image = im.rotate(180)
+                self.image.show()
+
+            if self.sender() is self.levod:
+                self.image = im.rotate(270)
+                self.image.show()
 
 
 if __name__ == "__main__":
