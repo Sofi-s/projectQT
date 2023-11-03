@@ -26,17 +26,17 @@ class ImageProcessor(QDialog):
         self.levod.clicked.connect(self.rotate)
         self.pravod.clicked.connect(self.rotate)
         self.izobr.setPixmap(self.pixmap)
-        self.izobr.setStyleSheet("background-color: gray;")
+        self.izobr.setStyleSheet("background-color: white;")
         self.angle = 0
         self.horizontalSlider_3.setMinimum(0)
         self.horizontalSlider_3.setMaximum(255)
         self.horizontalSlider_3.setValue(255)
         self.horizontalSlider_4.setMinimum(0)
-        self.horizontalSlider_4.setMaximum(4)
+        self.horizontalSlider_4.setMaximum(100)
         self.horizontalSlider_4.setValue(0)
-        self.con = sqlite3.connect("db.sqlite")
-        self.bd()
-
+        #self.con = sqlite3.connect("db.sqlite")
+        #self.bd()
+        self.pushb_bd.clicked.connect(self.open_second_form)
         # self.slider.valueChanged.connect(self.visibility)
         # for button in self.channelButtons.buttons():
 
@@ -130,40 +130,6 @@ class ImageProcessor(QDialog):
         except Exception as e:
             print(e)
 
-    def bd(self):
-
-        cur = self.con.cursor()
-        que = "SELECT * FROM filters"
-        try:
-            result = cur.execute(que).fetchall()
-            # Заполнили размеры таблицы
-            self.tableWidget.setRowCount(len(result))
-            self.tableWidget.setColumnCount(len(result[0]))
-
-            # Заполнили таблицу полученными элементами
-            for i, elem in enumerate(result):
-                for j, val in enumerate(elem):
-                    self.tableWidget.setItem(i, j, QTableWidgetItem(str(val)))
-            # self.statusbar.showMessage("")
-        except Exception:
-            print("По этому запросу ничего не найдено")
-            # self.statusbar.showMessage()
-    #
-    #     # Создаем таблицу Users
-    #     cursor.execute('''
-    #     CREATE TABLE IF NOT EXISTS Users (
-    #     id INTEGER PRIMARY KEY,
-    #     username TEXT NOT NULL,
-    #     email TEXT NOT NULL,
-    #     age INTEGER
-    #     )
-    #     ''')
-    #
-    #     # Сохраняем изменения и закрываем соединение
-    #     connection.commit()
-    #     connection.close()
-
-
     def applySepia(self):
         try:
             with Image.open(self.new_file_name) as im:
@@ -208,9 +174,9 @@ class ImageProcessor(QDialog):
                     a = pix[i, j][0]
                     b = pix[i, j][1]
                     c = pix[i, j][2]
-                    S = (a + b + c) // transp
-                    a = S + 75 * 2
-                    b = S + 75
+                    S = (a + b + c) // 3
+                    a = S + transp * 2
+                    b = S + transp
                     c = S
                     if (a > 255):
                         a = 255
@@ -257,6 +223,27 @@ class ImageProcessor(QDialog):
             yellow_image = ImageOps.colorize(self.image.convert("L"), "#FFFF00", "#FFFF99")
             self.image = yellow_image
 
+    # def nefative(self):
+    #     try:
+    #         with Image.open(self.new_file_name) as im:
+    #             pix = im.load()
+    #             draw = ImageDraw.Draw(im)
+    #             width = im.size[0]
+    #             height = im.size[1]
+    #             for i in range(width):
+    #                 for j in range(height):
+    #                     a = pix[i, j][0]
+    #                     b = pix[i, j][1]
+    #                     c = pix[i, j][2]
+    #                     draw.point((i, j), (255 - a, 255 - b, 255 - c))
+    #             img.save(self.new_file_name)
+    #             self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+    #             self.izobr.setPixmap(self.pixmap)
+    #
+    #     except Exception as e:
+    #     print(e)
+
+
     def saveImage(self):
         print(0)
 
@@ -268,7 +255,6 @@ class ImageProcessor(QDialog):
 
             if self.sender() is self.pravod:
                 self.image = im.rotate(90)
-                # self.image.show()
 
             if self.sender() is self.pravos:
                 self.image = im.rotate(180)
@@ -276,7 +262,41 @@ class ImageProcessor(QDialog):
                 self.image = im.rotate(270)
             self.image.save(self.new_file_name)
             self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
-            self.izobr.setPixmap(self.pixmap)
+
+    def open_second_form(self):
+        self.second_form = SecondForm(self, "Данные для второй формы")
+        self.second_form.show()
+
+
+class SecondForm(QWidget):
+    def __init__(self, *args):
+        super().__init__()
+        self.initUI()
+        self.con = sqlite3.connect("db.sqlite")
+        self.filter_bd()
+
+    def initUI(self):
+        self.setWindowTitle('Вторая форма')
+        uic.loadUi('form2.ui', self)
+
+    def filter_bd(self):
+        self.cur = self.con.cursor()
+        tab1 = "SELECT * FROM filters"
+        try:
+            result = self.cur.execute(tab1).fetchall()
+            # Заполнили размеры таблицы
+            self.tabWid_bd.setRowCount(len(result))
+            self.tabWid_bd.setColumnCount(len(result[0]))
+
+            # Заполнили таблицу полученными элементами
+            for i, elem in enumerate(result):
+                for j, val in enumerate(elem):
+                    self.tabWid_bd.setItem(i, j, QTableWidgetItem(str(val)))
+        except Exception as e:
+            print(e)
+
+
+
 
 
 if __name__ == "__main__":
