@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>819</width>
+    <width>866</width>
     <height>666</height>
    </rect>
   </property>
@@ -192,6 +192,13 @@ color: rgb(255, 255, 255);</string>
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="QPushButton" name="push_bd">
+      <property name="text">
+       <string>PushButton</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="verticalLayoutWidget">
@@ -263,32 +270,6 @@ color: rgb(255, 255, 255);</string>
    </property>
    <property name="text">
     <string/>
-   </property>
-  </widget>
-  <widget class="QTableWidget" name="tableWidget">
-   <property name="geometry">
-    <rect>
-     <x>480</x>
-     <y>440</y>
-     <width>331</width>
-     <height>171</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: rgb(255, 255, 234);</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>480</x>
-     <y>410</y>
-     <width>311</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Фильтры этого приложения</string>
    </property>
   </widget>
  </widget>

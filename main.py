@@ -6,16 +6,20 @@ from PyQt5.QtCore import Qt
 from PyQt5 import uic, QtCore
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps, ImageDraw
 import sqlite3
+from datetime import datetime
 
 
 class ImageProcessor(QDialog):
+
+    tec_tame = 0
+    difference = ''
 
     def __init__(self):
         super().__init__()
         uic.loadUi('photoshop2.ui', self)
         self.image = None
         self.image_path = None
-        self.new_file_name = "../new.png"
+        self.new_file_name = "new.png"
         self.filename = QFileDialog.getOpenFileName(self, 'Выберите картинку', '', 'Картинки (*.jpg)')[0]
         img = Image.open(self.filename)
         img.save(self.new_file_name)
@@ -34,9 +38,9 @@ class ImageProcessor(QDialog):
         self.horizontalSlider_4.setMinimum(0)
         self.horizontalSlider_4.setMaximum(100)
         self.horizontalSlider_4.setValue(0)
-        #self.con = sqlite3.connect("db.sqlite")
-        #self.bd()
-        self.pushb_bd.clicked.connect(self.open_second_form)
+        # self.con = sqlite3.connect("db.sqlite")
+        # self.bd()
+        self.push_bd.clicked.connect(self.open_second_form)
         # self.slider.valueChanged.connect(self.visibility)
         # for button in self.channelButtons.buttons():
 
@@ -74,8 +78,8 @@ class ImageProcessor(QDialog):
         #   self.image.setPixmap(self.pixmap)
         #   r = QTransform().rotate(self.angle)
         # self.pushButton_10.clicked.connect(self.openImage)
-
         self.pushButton_9.clicked.connect(self.saveImage)
+        # self.push_bd.clicked.connect(ImageProcessor.history_bd)
 
     def loadImage(self, path):
         self.image = Image.open(path).resize(430, 430)
@@ -156,6 +160,8 @@ class ImageProcessor(QDialog):
                 im.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
+                ImageProcessor.tec_tame = datetime.now()
+                self.difference = 'сепея'
         except Exception as e:
             print(e)
 
@@ -163,7 +169,6 @@ class ImageProcessor(QDialog):
         try:
             transp = int(self.horizontalSlider_4.value())
             img = Image.open(self.new_file_name)
-            # img = img.convert('RGBA')
             img.putalpha(transp)
             pix = img.load()
             draw = ImageDraw.Draw(img)
@@ -243,7 +248,6 @@ class ImageProcessor(QDialog):
     #     except Exception as e:
     #     print(e)
 
-
     def saveImage(self):
         print(0)
 
@@ -255,25 +259,36 @@ class ImageProcessor(QDialog):
 
             if self.sender() is self.pravod:
                 self.image = im.rotate(90)
+                self.difference = 'поврот на 90 влево'
 
             if self.sender() is self.pravos:
                 self.image = im.rotate(180)
+                self.difference = 'поврот на 90 влево'
             if self.sender() is self.levod:
                 self.image = im.rotate(270)
+                self.difference = 'поврот на 90 влево'
             self.image.save(self.new_file_name)
             self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+            ImageProcessor.history_bd(datetime.now(), self.difference)
+
+
 
     def open_second_form(self):
         self.second_form = SecondForm(self, "Данные для второй формы")
         self.second_form.show()
 
 
+
+
+
 class SecondForm(QWidget):
     def __init__(self, *args):
         super().__init__()
         self.initUI()
-        self.con = sqlite3.connect("../db.sqlite")
+        self.con = sqlite3.connect("db.sqlite")
         self.filter_bd()
+        self.history_bd()
+
 
     def initUI(self):
         self.setWindowTitle('Вторая форма')
@@ -284,17 +299,35 @@ class SecondForm(QWidget):
         tab1 = "SELECT * FROM filters"
         try:
             result = self.cur.execute(tab1).fetchall()
-            # Заполнили размеры таблицы
             self.tabWid_bd.setRowCount(len(result))
             self.tabWid_bd.setColumnCount(len(result[0]))
-
-            # Заполнили таблицу полученными элементами
             for i, elem in enumerate(result):
                 for j, val in enumerate(elem):
                     self.tabWid_bd.setItem(i, j, QTableWidgetItem(str(val)))
         except Exception as e:
             print(e)
 
+    def history_bd(self):
+        try:
+            self.cursor = self.con.cursor()
+            self.new_operation = (f'''INSERT
+            INTO
+            history(time, operation)
+            VALUES({ImageProcessor.tec_tame}, {ImageProcessor.difference})''')
+            try:
+                result = self.cur.execute(self.new_operation).fetchall()
+                self.tableWidget_2.setRowCount(len(result))
+                self.tableWidget_2.setColumnCount(len(result[0]))
+                for i, elem in enumerate(result):
+                    for j, val in enumerate(elem):
+                        self.tableWidget_2.setItem(i, j, QTableWidgetItem(str(val)))
+            except Exception as e:
+                print(e)
+            self.cursor.commit()
+            self.cursor.close()
+
+        except Exception as e:
+            print(e)
 
 
 
