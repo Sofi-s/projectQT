@@ -161,7 +161,7 @@ class ImageProcessor(QDialog):
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
                 ImageProcessor.tec_tame = datetime.now()
-                self.difference = 'сепея'
+                ImageProcessor.difference = 'сепея'
         except Exception as e:
             print(e)
 
@@ -313,7 +313,7 @@ class SecondForm(QWidget):
             self.new_operation = (f'''INSERT
             INTO
             history(time, operation)
-            VALUES({ImageProcessor.tec_tame}, {ImageProcessor.difference})''')
+            VALUES("{ImageProcessor.tec_tame}", "{ImageProcessor.difference})"''')
             try:
                 result = self.cur.execute(self.new_operation).fetchall()
                 self.tableWidget_2.setRowCount(len(result))
@@ -323,7 +323,7 @@ class SecondForm(QWidget):
                         self.tableWidget_2.setItem(i, j, QTableWidgetItem(str(val)))
             except Exception as e:
                 print(e)
-            self.cursor.commit()
+            self.con.commit()
             self.cursor.close()
 
         except Exception as e:
