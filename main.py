@@ -67,12 +67,7 @@ class ImageProcessor(QDialog):
         #
         #   self.hb.clicked.connect(self.applyGrayscale)
         #   self.horizontalSlider_8.valueChanged.connect(self.applyGrayscale)
-        #
-        #   self.pravos.clicked.connect(self.rotate)
-        #   self.pravod.clicked.connect(self.rotate)
-        #   self.levod.clicked.connect(self.rotate)
-        #   self.image.setPixmap(self.pixmap)
-        #   r = QTransform().rotate(self.angle)
+
         # self.pushButton_10.clicked.connect(self.openImage)
 
         self.pushButton_9.clicked.connect(self.saveImage)
@@ -223,6 +218,9 @@ class ImageProcessor(QDialog):
             yellow_image = ImageOps.colorize(self.image.convert("L"), "#FFFF00", "#FFFF99")
             self.image = yellow_image
 
+
+
+
     # def nefative(self):
     #     try:
     #         with Image.open(self.new_file_name) as im:
@@ -295,6 +293,35 @@ class SecondForm(QWidget):
         except Exception as e:
             print(e)
 
+    import sqlite3
+
+    def create_table(self):
+        conn = sqlite3.connect("history.db")
+        cursor = conn.cursor()
+
+        # Создаем таблицу с двумя колонками: "время" (time) и "изменение" (difference)
+        cursor.execute('''CREATE TABLE IF NOT EXISTS changes (
+                          time TIMESTAMP,
+                          difference TEXT)''')
+
+        conn.commit()
+        conn.close()
+
+    def insert_data(self, time, difference):
+        conn = sqlite3.connect("my_database.db")
+        cursor = conn.cursor()
+
+        # Вставляем данные в таблицу
+        cursor.execute("INSERT INTO changes (time, difference) VALUES (?, ?)", (time, difference))
+
+        conn.commit()
+        conn.close()
+
+    # Вызываем функцию для создания таблицы
+    create_table()
+
+    # Пример использования функции для вставки данных
+    insert_data("2023-11-07 15:30:00", "Some difference")
 
 
 
