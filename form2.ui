@@ -21,7 +21,7 @@
     <rect>
      <x>20</x>
      <y>40</y>
-     <width>381</width>
+     <width>331</width>
      <height>201</height>
     </rect>
    </property>
@@ -50,7 +50,7 @@
     <rect>
      <x>20</x>
      <y>280</y>
-     <width>381</width>
+     <width>331</width>
      <height>201</height>
     </rect>
    </property>
@@ -60,6 +60,32 @@
     <rect>
      <x>30</x>
      <y>250</y>
+     <width>241</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 16pt &quot;Matura MT Script Capitals&quot;;</string>
+   </property>
+   <property name="text">
+    <string>History</string>
+   </property>
+  </widget>
+  <widget class="QTableWidget" name="tableWidget_csv">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>530</y>
+     <width>511</width>
+     <height>201</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_history_2">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>500</y>
      <width>241</width>
      <height>20</height>
     </rect>
