@@ -1,11 +1,13 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QDialog, QPushButton, QSlider, QVBoxLayout, QWidget, QFileDialog, QLabel, \
-    QTableWidgetItem
-from PyQt5.QtGui import QPixmap, QImage, QColor, qRgb, QTransform
+    QTableWidgetItem,QCommandLinkButton
+from PyQt5.QtGui import QPixmap, QImage, QColor, qRgb, QTransform, QMouseEvent
 from PyQt5.QtCore import Qt
 from PyQt5 import uic, QtCore
-from PIL import Image, ImageEnhance, ImageFilter, ImageOps, ImageDraw
+from PIL import Image, ImageEnhance, ImageFilter, ImageOps, ImageDraw, ImageEnhance
 import sqlite3
+import csv
+
 
 
 class ImageProcessor(QDialog):
@@ -21,7 +23,6 @@ class ImageProcessor(QDialog):
         img.save(self.new_file_name)
         self.pixmap = QPixmap(self.filename).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
         self.izobr.setPixmap(self.pixmap)
-        # self.displayImage()
         self.pravos.clicked.connect(self.rotate)
         self.levod.clicked.connect(self.rotate)
         self.pravod.clicked.connect(self.rotate)
@@ -31,57 +32,38 @@ class ImageProcessor(QDialog):
         self.horizontalSlider_3.setMinimum(0)
         self.horizontalSlider_3.setMaximum(255)
         self.horizontalSlider_3.setValue(255)
-        self.horizontalSlider_4.setMinimum(0)
-        self.horizontalSlider_4.setMaximum(100)
-        self.horizontalSlider_4.setValue(0)
-        #self.con = sqlite3.connect("db.sqlite")
-        #self.bd()
-        self.pushb_bd.clicked.connect(self.open_second_form)
+        # self.horizontalSlider_4.setMinimum(0)
+        # self.horizontalSlider_4.setMaximum(100)
+        # self.horizontalSlider_4.setValue(0)
+        # self.con = sqlite3.connect("db.sqlite")
+        # self.bd()
+        self.push_bd.clicked.connect(self.open_second_form)
         # self.slider.valueChanged.connect(self.visibility)
         # for button in self.channelButtons.buttons():
+        self.comBY_yvel.clicked.connect(lambda: self.yark_yvelich_1)
 
-        #   self.yarkost.clicked.connect(self.adjustBrightness)
+        self.yarkost.clicked.connect(self. adjustBrightness)
         # #  self.horizontalSlider.valueChanged.connect(self.adjustBrightness)
         #   self.razmutie.clicked.connect(self.blurImage)
-        #   self.horizontalSlider_2.valueChanged.connect(self.blurImage)
+        self.pushBu_orig.clicked.connect(self.orig_im)
         #
         #   # self.prozrachnost.clicked.connect(self.prozrachnost)
         self.horizontalSlider_3.valueChanged[int].connect(self.adjustTransparency)
-        #   self.alpha = self.findChild(QSlider, 'horizontalSlider_3')
-        #   self.alpha.valueChanged[int].connect(self.adjustTransparency)
-        #
         self.sepeia.clicked.connect(self.applySepia)
-        self.horizontalSlider_4.valueChanged.connect(self.applySepias)
-        #
-
-        self.blue.clicked.connect(self.channel)
-        self.hb.clicked.connect(self.channel)
-        self.yellow.clicked.connect(self.channel)
-        #   self.horizontalSlider_5.valueChanged.connect(self.applyCyanotype)
-        #
-        #   self.negative.clicked.connect(self.applyNegative)
-        #   self.horizontalSlider_6.valueChanged.connect(self.applyNegative)
-        #
-        #   self.yellow.clicked.connect(self.applyYellowEffect)
-        #   self.horizontalSlider_7.valueChanged.connect(self.applyYellowEffect)
-        #
-        #   self.hb.clicked.connect(self.applyGrayscale)
-        #   self.horizontalSlider_8.valueChanged.connect(self.applyGrayscale)
-        #
-        #   self.pravos.clicked.connect(self.rotate)
-        #   self.pravod.clicked.connect(self.rotate)
-        #   self.levod.clicked.connect(self.rotate)
-        #   self.image.setPixmap(self.pixmap)
-        #   r = QTransform().rotate(self.angle)
-        # self.pushButton_10.clicked.connect(self.openImage)
-
+        self.blue.clicked.connect(self.applyBlueEffect)
+        self.green.clicked.connect(self.applyGreenEffect)
+        self.hb.clicked.connect(self.white_black)
+        self.negative.clicked.connect(self.Negative)
+        self.pushButton_red.clicked.connect(self.applyRedEffect)
+        self.hb.clicked.connect(self.white_black)
+        self.pravos.clicked.connect(self.rotate)
+        self.pravod.clicked.connect(self.rotate)
+        self.levod.clicked.connect(self.rotate)
+        #lf.mouse()
         self.pushButton_9.clicked.connect(self.saveImage)
 
     def loadImage(self, path):
         self.image = Image.open(path).resize(430, 430)
-        self.displayImage()
-
-    # def bd(self):
 
     def displayImage(self, processed_image=None):
         print(0)
@@ -93,28 +75,20 @@ class ImageProcessor(QDialog):
             qImg = QImage(self.image.tobytes("raw", "RGBA"), self.image.width, self.image.height,
                           QImage.Format_RGBA8888)
             pixmap = QPixmap.fromImage(qImg).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
-            self.izobr.setPixmap(pixmap)  # Убрали self.ui.
+            self.izobr.setPixmap(pixmap)
 
     def adjustBrightness(self):
-        value = self.horizontalSlider.value() / 50.0
-        if self.image is not None:
-            enhanced = ImageEnhance.Brightness(self.image)
-            adjusted_image = enhanced.enhance(value)
-            self.addToHistory(f'Adjusted Brightness: {value}')
-            self.displayImage(adjusted_image)
+        try:
+            with Image.open(self.new_file_name) as im:
+                self.enhancer = ImageEnhance.Contrast(im)
+                self.factor = 2  # gives original image
+                self.im_output = self.enhancer.enhance(self.factor)
+                self.im_output.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+        except Exception as e:
+            print(e)
 
-    def applyGrayscale(self):
-        if self.image is not None:
-            grayscale_image = self.image.convert("L")
-            self.addToHistory('Applied Grayscale Effect')
-            self.displayImage(grayscale_image)
-
-    def blurImage(self):
-        kernel_size = self.horizontalSlider_2.value()
-        if self.image is not None:
-            blurred_image = self.image.filter(ImageFilter.GaussianBlur(radius=kernel_size / 2))
-            self.addToHistory(f'Applied Blur: Kernel Size {kernel_size}')
-            self.displayImage(blurred_image)
 
     def adjustTransparency(self, value):
         try:
@@ -129,6 +103,29 @@ class ImageProcessor(QDialog):
 
         except Exception as e:
             print(e)
+
+    # def mouse(self, event: QMouseEvent):
+    #     if event.button() == Qt.LeftButton:
+    #         x = event.x()
+    #         y = event.y()
+    #         print(f"Координаты нажатия: x={x}, y={y}")
+
+    def yark_yvelich(self, n):
+        self.n = self.n + 0.5
+
+    def yark_yvelich_1(self):
+        try:
+            with Image.open(self.new_file_name) as im:
+                self.enhancer = ImageEnhance.Contrast(im)
+                self.factor = 1.5
+                self.comBY_yvel.clicked.connect(lambda: self.yark_yvelich(self.factor))
+                self.im_output = self.enhancer.enhance(self.factor)
+                self.im_output.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+        except Exception as e:
+            print(e)
+
 
     def applySepia(self):
         try:
@@ -191,62 +188,87 @@ class ImageProcessor(QDialog):
         except Exception as e:
             print(e)
 
-    def channel(self):
+    def white_black(self):
+        try:
+             with Image.open(self.new_file_name) as img:
+                 gray_img = img.convert("L")
+                 gray_img.save(self.new_file_name)
+                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                 self.izobr.setPixmap(self.pixmap)
+        except Exception as e:
+            print(e)
 
-        self.curr_image = self.orig_image.copy()
-        x, y = self.curr_image.size().width(), self.curr_image.size().height()
+    def orig_im(self):
+        try:
+            with Image.open(self.filename) as im:
 
-        for i in range(x):
-            for j in range(y):
-                yellow, hb, blue, _ = self.curr_image.pixelColor(i, j).getRgb()
+                self.im.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+        except Exception as e:
+            print(e)
 
-        r = QTransform().rotate(self.angle)
-        self.curr_image = self.curr_image.transformed(r)
-        self.pixmap = QPixmap.fromImage(self.curr_image)
-        self.izobr.setPixmap(self.pixmap)
-        self.loadImage(self.image_path)
 
-    def applyCyanotype(self):
-        if self.image is not None:
-            cyanotype_image = ImageOps.colorize(self.image.convert("L"), "#003366", "#99CCFF")
-            self.addToHistory('Applied Cyanotype Effect')
-            self.displayImage(cyanotype_image)
+    def applyRedEffect(self):
+        try:
+            with Image.open(self.new_file_name) as img:
+                red, green, blue = img.split()
+                zeroed_band = red.point(lambda _: 0)
+                self.red_merge = Image.merge("RGB", (red, zeroed_band, zeroed_band))
+                self.red_merge.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+        except Exception as e:
+            print(e)
 
-    def applyNegative(self):
-        if self.image is not None:
-            negative_image = ImageOps.invert(self.image.convert("RGB"))
-            self.addToHistory('Applied Negative Effect')
-            self.displayImage(negative_image)
+    def applyBlueEffect(self):
+        try:
+            with Image.open(self.new_file_name) as img:
+                red, green, blue = img.split()
+                zeroed_band = red.point(lambda _: 0)
+                self.blue_merge = Image.merge("RGB", (zeroed_band, zeroed_band, blue))
+                self.blue_merge.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+        except Exception as e:
+            print(e)
 
-    def applyYellowEffect(self):
-        if self.image is not None:
-            yellow_image = ImageOps.colorize(self.image.convert("L"), "#FFFF00", "#FFFF99")
-            self.image = yellow_image
+    def applyGreenEffect(self):
+        try:
+            with Image.open(self.new_file_name) as img:
+                red, green, blue = img.split()
+                zeroed_band = red.point(lambda _: 0)
+                self.green_merge = Image.merge("RGB", (zeroed_band, green, zeroed_band))
+                self.green_merge.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+        except Exception as e:
+            print(e)
 
-    # def nefative(self):
-    #     try:
-    #         with Image.open(self.new_file_name) as im:
-    #             pix = im.load()
-    #             draw = ImageDraw.Draw(im)
-    #             width = im.size[0]
-    #             height = im.size[1]
-    #             for i in range(width):
-    #                 for j in range(height):
-    #                     a = pix[i, j][0]
-    #                     b = pix[i, j][1]
-    #                     c = pix[i, j][2]
-    #                     draw.point((i, j), (255 - a, 255 - b, 255 - c))
-    #             img.save(self.new_file_name)
-    #             self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
-    #             self.izobr.setPixmap(self.pixmap)
-    #
-    #     except Exception as e:
-    #     print(e)
 
+
+    def Negative(self):
+        try:
+            with Image.open(self.new_file_name) as im:
+                pix = im.load()
+                draw = ImageDraw.Draw(im)
+                width = im.size[0]
+                height = im.size[1]
+                for i in range(width):
+                    for j in range(height):
+                        a = pix[i, j][0]
+                        b = pix[i, j][1]
+                        c = pix[i, j][2]
+                        draw.point((i, j), (255 - a, 255 - b, 255 - c))
+                im.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+
+        except Exception as e:
+            print(e)
 
     def saveImage(self):
         print(0)
-
         img = Image.open(self.new_file_name)
         img.save(QFileDialog.getSaveFileName(self, 'Выберите картинку', '', 'Картинки (*.jpg)')[0])
 
@@ -268,12 +290,15 @@ class ImageProcessor(QDialog):
         self.second_form.show()
 
 
+
+
 class SecondForm(QWidget):
     def __init__(self, *args):
         super().__init__()
         self.initUI()
         self.con = sqlite3.connect("db.sqlite")
         self.filter_bd()
+        self.loadTable('images2.csv')
 
     def initUI(self):
         self.setWindowTitle('Вторая форма')
@@ -284,19 +309,52 @@ class SecondForm(QWidget):
         tab1 = "SELECT * FROM filters"
         try:
             result = self.cur.execute(tab1).fetchall()
-            # Заполнили размеры таблицы
             self.tabWid_bd.setRowCount(len(result))
             self.tabWid_bd.setColumnCount(len(result[0]))
-
-            # Заполнили таблицу полученными элементами
             for i, elem in enumerate(result):
                 for j, val in enumerate(elem):
                     self.tabWid_bd.setItem(i, j, QTableWidgetItem(str(val)))
         except Exception as e:
             print(e)
 
+    def loadTable(self, table_name):
+        try:
+            with open(table_name) as csvfile:
+                reader = csv.reader(csvfile, delimiter=';', quotechar='"')
+                title = next(reader)
+                self.tableWidget_csv.setColumnCount(len(title))
+                self.tableWidget_csv.setHorizontalHeaderLabels(title)
+                self.tableWidget_csv.setRowCount(0)
+                for i, row in enumerate(reader):
+                    self.tableWidget_csv.setRowCount(
+                        self.tableWidget_csv.rowCount() + 1)
+                    for j, elem in enumerate(row):
+                        self.tableWidget_csv.setItem(i, j, QTableWidgetItem(str(elem)))
+            self.tableWidget_csv.resizeColumnsToContents()
+        except Exception as e:
+            print(e)
 
-
+    # def history_bd(self):
+    #     try:
+    #         self.cursor = self.con.cursor()
+    #         self.new_operation = (f'''INSERT
+    # INTO
+    # history(time, operation)
+    # VALUES({ImageProcessor.tec_tame}, {ImageProcessor.difference})''')
+    #         try:
+    #             result = self.cur.execute(self.new_operation).fetchall()
+    #             self.tableWidget_2.setRowCount(len(result))
+    #             self.tableWidget_2.setColumnCount(len(result[0]))
+    #             for i, elem in enumerate(result):
+    #                 for j val in enumerate(elem):
+    #                     self.tableWidget_2.setItem(i, j, QTableWidgetItem(str(val)))
+    #         except Exception as e:
+    #             print(e)
+    #         self.cursor.commit()
+    #         self.cursor.close()
+    #
+    #     except Exception as e:
+    #         print(e)
 
 
 if __name__ == "__main__":

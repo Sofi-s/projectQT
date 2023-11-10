@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>866</width>
-    <height>666</height>
+    <width>890</width>
+    <height>704</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,158 +16,12 @@
   <property name="styleSheet">
    <string notr="true">background-color: rgb(255, 253, 240);</string>
   </property>
-  <widget class="QWidget" name="formLayoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>341</width>
-     <height>275</height>
-    </rect>
-   </property>
-   <layout class="QFormLayout" name="formLayout">
-    <item row="0" column="0">
-     <widget class="QPushButton" name="yarkost">
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(255, 255, 184);</string>
-      </property>
-      <property name="text">
-       <string>Яркость</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QSlider" name="horizontalSlidery">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QPushButton" name="razmutie">
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(219, 255, 252);</string>
-      </property>
-      <property name="text">
-       <string>размытие</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QSlider" name="horizontalSlider_2">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QPushButton" name="prozrachnost">
-      <property name="text">
-       <string>прозрачность</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QSlider" name="horizontalSlider_3">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QPushButton" name="sepeia">
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(255, 153, 85);</string>
-      </property>
-      <property name="text">
-       <string>сепия</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QSlider" name="horizontalSlider_4">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="0">
-     <widget class="QPushButton" name="blue">
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(41, 80, 255);</string>
-      </property>
-      <property name="text">
-       <string>Цианотипия</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QSlider" name="horizontalSlider_5">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="0">
-     <widget class="QPushButton" name="negative">
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(12, 1, 0);
-color: rgb(255, 255, 255);</string>
-      </property>
-      <property name="text">
-       <string>негатив</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="1">
-     <widget class="QSlider" name="horizontalSlider_6">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="0">
-     <widget class="QPushButton" name="yellow">
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(255, 255, 0);</string>
-      </property>
-      <property name="text">
-       <string>желтый</string>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="1">
-     <widget class="QSlider" name="horizontalSlider_7">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="0">
-     <widget class="QPushButton" name="hb">
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(255, 255, 255);</string>
-      </property>
-      <property name="text">
-       <string>чб</string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="1">
-     <widget class="QSlider" name="horizontalSlider_8">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>475</x>
-     <y>620</y>
-     <width>361</width>
+     <x>350</x>
+     <y>670</y>
+     <width>531</width>
      <height>31</height>
     </rect>
    </property>
@@ -193,9 +47,22 @@ color: rgb(255, 255, 255);</string>
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="push_bd">
+     <widget class="QPushButton" name="pushBu_orig">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 184);</string>
+      </property>
       <property name="text">
-       <string>PushButton</string>
+       <string>изначальное изображение</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="push_bd">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 184);</string>
+      </property>
+      <property name="text">
+       <string>БД</string>
       </property>
      </widget>
     </item>
@@ -205,9 +72,9 @@ color: rgb(255, 255, 255);</string>
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>290</y>
-     <width>111</width>
-     <height>151</height>
+     <y>360</y>
+     <width>120</width>
+     <height>141</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -215,12 +82,18 @@ color: rgb(255, 255, 255);</string>
      <widget class="QLabel" name="povorot">
       <property name="font">
        <font>
-        <family>Papyrus</family>
+        <family>Segoe Print</family>
         <pointsize>12</pointsize>
+        <weight>9</weight>
+        <italic>false</italic>
+        <bold>false</bold>
        </font>
       </property>
       <property name="layoutDirection">
        <enum>Qt::RightToLeft</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font: 75 12pt &quot;Segoe Print&quot;;</string>
       </property>
       <property name="text">
        <string>поворот на</string>
@@ -262,8 +135,8 @@ color: rgb(255, 255, 255);</string>
   <widget class="QLabel" name="izobr">
    <property name="geometry">
     <rect>
-     <x>390</x>
-     <y>20</y>
+     <x>460</x>
+     <y>30</y>
      <width>401</width>
      <height>331</height>
     </rect>
@@ -271,6 +144,343 @@ color: rgb(255, 255, 255);</string>
    <property name="text">
     <string/>
    </property>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>130</x>
+     <y>420</y>
+     <width>81</width>
+     <height>83</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="3" column="0">
+     <widget class="QPushButton" name="blue">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(41, 80, 255);</string>
+      </property>
+      <property name="text">
+       <string>синий</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QPushButton" name="pushButton_red">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 6, 10);</string>
+      </property>
+      <property name="text">
+       <string>красный</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QPushButton" name="green">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(47, 255, 0);</string>
+      </property>
+      <property name="text">
+       <string>зеленый</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>80</y>
+     <width>311</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <item>
+     <widget class="QCommandLinkButton" name="comButtont_0">
+      <property name="styleSheet">
+       <string notr="true">font: 75 8pt &quot;Segoe Print&quot;;</string>
+      </property>
+      <property name="text">
+       <string>уменьшить</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="yarkost">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 184);
+font: 75 8pt &quot;Segoe Print&quot;;</string>
+      </property>
+      <property name="text">
+       <string>Яркость</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QCommandLinkButton" name="comBY_yvel">
+      <property name="styleSheet">
+       <string notr="true">font: 75 8pt &quot;Segoe Print&quot;;</string>
+      </property>
+      <property name="text">
+       <string>увеличеть</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget_3">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>130</y>
+     <width>433</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_4">
+    <item>
+     <widget class="QCommandLinkButton" name="commandLinkButton_3">
+      <property name="text">
+       <string>CommandLinkButton</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="contrast">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 184);
+font: 75 8pt &quot;Segoe Print&quot;;</string>
+      </property>
+      <property name="text">
+       <string>контраст</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QCommandLinkButton" name="commandLinkButton_4">
+      <property name="text">
+       <string>CommandLinkButton</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="verticalLayoutWidget_2">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>419</y>
+     <width>81</width>
+     <height>83</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QPushButton" name="sepeia">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 153, 85);</string>
+      </property>
+      <property name="text">
+       <string>сепия</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="hb">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 255);</string>
+      </property>
+      <property name="text">
+       <string>чб</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="negative">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(12, 1, 0);
+color: rgb(255, 255, 255);</string>
+      </property>
+      <property name="text">
+       <string>негатив</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QSlider" name="horizontalSlider_2">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>50</y>
+     <width>271</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="razmutie">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>50</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(219, 255, 252);</string>
+   </property>
+   <property name="text">
+    <string>размытие</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="prozrachnost">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>20</y>
+     <width>78</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>прозрачность</string>
+   </property>
+  </widget>
+  <widget class="QSlider" name="horizontalSlider_3">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>20</y>
+     <width>271</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>190</y>
+     <width>221</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 75 14pt &quot;Segoe Print&quot;;</string>
+   </property>
+   <property name="text">
+    <string>Обрезка</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>240</y>
+     <width>441</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 75 9pt &quot;Segoe Print&quot;;</string>
+   </property>
+   <property name="text">
+    <string>зажмите лкм в верхнем левом углу, откуда хотите начать обрезку</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>270</y>
+     <width>441</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 75 9pt &quot;Segoe Print&quot;;</string>
+   </property>
+   <property name="text">
+    <string>зажмите лкм в правом нижнем углу, где хотите обрезать</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>520</y>
+     <width>291</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>эффекты гравюры</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>550</y>
+     <width>361</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="0">
+     <widget class="QPushButton" name="pushButton">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 184);
+font: 75 8pt &quot;Segoe Print&quot;;</string>
+      </property>
+      <property name="text">
+       <string>PushButton</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QPushButton" name="pushButton_2">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 184);
+font: 75 8pt &quot;Segoe Print&quot;;</string>
+      </property>
+      <property name="text">
+       <string>PushButton</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QPushButton" name="pushButton_3">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 184);
+font: 75 8pt &quot;Segoe Print&quot;;</string>
+      </property>
+      <property name="text">
+       <string>PushButton</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QPushButton" name="pushButton_4">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 184);
+font: 75 8pt &quot;Segoe Print&quot;;</string>
+      </property>
+      <property name="text">
+       <string>PushButton</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>
