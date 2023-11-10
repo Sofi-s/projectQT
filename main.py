@@ -6,13 +6,9 @@ from PyQt5.QtCore import Qt
 from PyQt5 import uic, QtCore
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps, ImageDraw
 import sqlite3
-from datetime import datetime
-import csv
 
 
 class ImageProcessor(QDialog):
-    tec_tame = 0
-    difference = ''
 
     def __init__(self):
         super().__init__()
@@ -38,9 +34,9 @@ class ImageProcessor(QDialog):
         self.horizontalSlider_4.setMinimum(0)
         self.horizontalSlider_4.setMaximum(100)
         self.horizontalSlider_4.setValue(0)
-        # self.con = sqlite3.connect("db.sqlite")
-        # self.bd()
-        self.push_bd.clicked.connect(self.open_second_form)
+        #self.con = sqlite3.connect("db.sqlite")
+        #self.bd()
+        self.pushb_bd.clicked.connect(self.open_second_form)
         # self.slider.valueChanged.connect(self.visibility)
         # for button in self.channelButtons.buttons():
 
@@ -78,8 +74,8 @@ class ImageProcessor(QDialog):
         #   self.image.setPixmap(self.pixmap)
         #   r = QTransform().rotate(self.angle)
         # self.pushButton_10.clicked.connect(self.openImage)
+
         self.pushButton_9.clicked.connect(self.saveImage)
-        # self.push_bd.clicked.connect(ImageProcessor.history_bd)
 
     def loadImage(self, path):
         self.image = Image.open(path).resize(430, 430)
@@ -160,8 +156,6 @@ class ImageProcessor(QDialog):
                 im.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
-                ImageProcessor.tec_tame = datetime.now()
-                ImageProcessor.difference = 'сепея'
         except Exception as e:
             print(e)
 
@@ -169,6 +163,7 @@ class ImageProcessor(QDialog):
         try:
             transp = int(self.horizontalSlider_4.value())
             img = Image.open(self.new_file_name)
+            # img = img.convert('RGBA')
             img.putalpha(transp)
             pix = img.load()
             draw = ImageDraw.Draw(img)
@@ -246,7 +241,8 @@ class ImageProcessor(QDialog):
     #             self.izobr.setPixmap(self.pixmap)
     #
     #     except Exception as e:
-          #  print(e)
+    #     print(e)
+
 
     def saveImage(self):
         print(0)
@@ -259,17 +255,13 @@ class ImageProcessor(QDialog):
 
             if self.sender() is self.pravod:
                 self.image = im.rotate(90)
-                self.difference = 'поврот на 90 влево'
 
             if self.sender() is self.pravos:
                 self.image = im.rotate(180)
-                self.difference = 'поврот на 90 влево'
             if self.sender() is self.levod:
                 self.image = im.rotate(270)
-                self.difference = 'поврот на 90 влево'
             self.image.save(self.new_file_name)
             self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
-            ImageProcessor.history_bd(datetime.now(), self.difference)
 
     def open_second_form(self):
         self.second_form = SecondForm(self, "Данные для второй формы")
@@ -277,80 +269,35 @@ class ImageProcessor(QDialog):
 
 
 class SecondForm(QWidget):
-    try:
-        def __init__(self, *args):
-            super().__init__()
-            self.initUI()
-            self.con = sqlite3.connect("db.sqlite")
-            self.filter_bd()
-            #uic.loadUi('form2.ui', self)
-            self.fill_table()
-            # self.write_history()
-            self.table.setColumnCount(0)
-            self.table.setRowCount(0)
-            self.loadTable('images.csv')
+    def __init__(self, *args):
+        super().__init__()
+        self.initUI()
+        self.con = sqlite3.connect("db.sqlite")
+        self.filter_bd()
+
+    def initUI(self):
+        self.setWindowTitle('Вторая форма')
+        uic.loadUi('form2.ui', self)
+
+    def filter_bd(self):
+        self.cur = self.con.cursor()
+        tab1 = "SELECT * FROM filters"
+        try:
+            result = self.cur.execute(tab1).fetchall()
+            # Заполнили размеры таблицы
+            self.tabWid_bd.setRowCount(len(result))
+            self.tabWid_bd.setColumnCount(len(result[0]))
+
+            # Заполнили таблицу полученными элементами
+            for i, elem in enumerate(result):
+                for j, val in enumerate(elem):
+                    self.tabWid_bd.setItem(i, j, QTableWidgetItem(str(val)))
+        except Exception as e:
+            print(e)
 
 
 
-        def initUI(self):
-            self.setWindowTitle('Вторая форма')
-            uic.loadUi('form2.ui', self)
 
-        def filter_bd(self):
-            self.cur = self.con.cursor()
-            tab1 = "SELECT * FROM filters"
-            try:
-                result = self.cur.execute(tab1).fetchall()
-                self.tabWid_bd.setRowCount(len(result))
-                self.tabWid_bd.setColumnCount(len(result[0]))
-                for i, elem in enumerate(result):
-                    for j, val in enumerate(elem):
-                        self.tabWid_bd.setItem(i, j, QTableWidgetItem(str(val)))
-            except Exception as e:
-                print(e)
-
-        def fill_table(self):
-            try:
-                self.cur = self.con.cursor()
-                self.t = self.cur.execute("SELECT * FROM history").fetchall()
-                n = len(self.t)
-                self.tableWidget_2.setRowCount(n)
-                self.tableWidget_2.setColumnCount(3)
-
-                for i, j in enumerate(self.t):
-                    for j, value in enumerate(j):
-                        item = QTableWidgetItem(str(value))
-                        self.tableWidget_2.setItem(i, j, item)
-
-            except Exception as e:
-                print(e)
-
-        def write_history(self):
-            try:
-                cur = self.cur = self.con.cursor()
-                cur.execute('INSERT INTO history (time, operation) VALUES (?, ?)', ('14', 'hi'))
-            except Exception as e:
-                print(e)
-
-        def loadTable(self, table_name):
-            try:
-                with open(table_name) as csvfile:
-                    reader = csv.reader(csvfile, delimiter=';', quotechar='""')
-                    title = next(reader)
-                    self.tableWidget_csv.setColumnCount(len(title))
-                    self.tableWidget_csv.setHorizontalHeaderLabels(title)
-                    self.tableWidget_csv.setRowCount(0)
-                    for i, row in enumerate(reader):
-                        self.tableWidget_csv.setRowCount(
-                            self.tableWidget_csv.rowCount() + 1)
-                        for j, elem in enumerate(row):
-                            self.tableWidget_csv.setItem(
-                                i, j, QTableWidgetItem(elem))
-                self.tableWidget_csv.resizeColumnsToContents()
-            except Exception as e:
-                print(e)
-    except Exception as e:
-        print(e)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
