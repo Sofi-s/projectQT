@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QDialog, QPushButton, QSlider, QVBoxLayout, QWidget, QFileDialog, QLabel, \
-    QTableWidgetItem,QCommandLinkButton
-from PyQt5.QtGui import QPixmap, QImage, QColor, qRgb, QTransform, QMouseEvent
+    QTableWidgetItem,QCommandLinkButton,QShortcut
+from PyQt5.QtGui import QPixmap, QImage, QColor, qRgb, QTransform, QMouseEvent,QKeySequence
 from PyQt5.QtCore import Qt
 from PyQt5 import uic, QtCore
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps, ImageDraw, ImageEnhance
@@ -28,6 +28,7 @@ class ImageProcessor(QDialog):
         self.pravos.clicked.connect(self.rotate)
         self.levod.clicked.connect(self.rotate)
         self.pravod.clicked.connect(self.rotate)
+        self.zerc.clicked.connect(self.z)
         self.izobr.setPixmap(self.pixmap)
         self.izobr.setStyleSheet("background-color: white;")
         self.izobr.mousePressEvent = self.mousePressEvent1
@@ -35,24 +36,21 @@ class ImageProcessor(QDialog):
         self.horizontalSlider_3.setMinimum(0)
         self.horizontalSlider_3.setMaximum(255)
         self.horizontalSlider_3.setValue(255)
-        # self.horizontalSlider_4.setMinimum(0)
-        # self.horizontalSlider_4.setMaximum(100)
-        # self.horizontalSlider_4.setValue(0)
-        # self.con = sqlite3.connect("db.sqlite")
-        # self.bd()
+        self.horizontalSlider_4.setMinimum(0)
+        self.horizontalSlider_4.setMaximum(100)
+        self.horizontalSlider_4.setValue(0)
+        self.horizontalSlider_2.setValue(0)
+        self.horizontalSlider_2.setMinimum(0)
+        self.horizontalSlider_2.setMaximum(150)
         self.push_bd.clicked.connect(self.open_second_form)
-        # self.slider.valueChanged.connect(self.visibility)
-        # for button in self.channelButtons.buttons():
         self.comBY_yvel.clicked.connect(lambda: self.yark_yvelich_1)
-
         self.yarkost.clicked.connect(self. adjustBrightness)
-        # #  self.horizontalSlider.valueChanged.connect(self.adjustBrightness)
-        #   self.razmutie.clicked.connect(self.blurImage)
         self.pushBu_orig.clicked.connect(self.orig_im)
         tec_tame = 0
         difference = ''
-        #self.prozrachnost.clicked.connect(self.prozrachnost)
+        self.horizontalSlider_2.valueChanged[int].connect(self.razmatie)
         self.horizontalSlider_3.valueChanged[int].connect(self.adjustTransparency)
+        self.horizontalSlider_4.valueChanged[int].connect(self.applySepias)
         self.sepeia.clicked.connect(self.applySepia)
         self.blue.clicked.connect(self.applyBlueEffect)
         self.green.clicked.connect(self.applyGreenEffect)
@@ -63,7 +61,6 @@ class ImageProcessor(QDialog):
         self.pravos.clicked.connect(self.rotate)
         self.pravod.clicked.connect(self.rotate)
         self.levod.clicked.connect(self.rotate)
-        # self.mouse()
         self.pushButton_9.clicked.connect(self.saveImage)
         self.con = sqlite3.connect("db.sqlite")
         self.query = """DELETE from history"""
@@ -72,7 +69,11 @@ class ImageProcessor(QDialog):
         self.cursor.execute(self.query)
         self.con.commit()
         self.x = self.y = self.x1 = self.y1 = 0
-
+        shortcut = QShortcut(QKeySequence("Ctrl+S"), self)
+        shortcut.activated.connect(self.saveImage)
+        self.comBY_yvel.clicked.connect(self.increaseBrightness)
+        self.contr_yvelich.clicked.connect(self.contrast_f)
+        self.recz_yvel.clicked.connect(self.inrezcost)
 
     def loadImage(self, path):
         self.image = Image.open(path).resize(430, 430)
@@ -116,21 +117,32 @@ class ImageProcessor(QDialog):
         except Exception as e:
             print(e)
 
+    def razmatie(self, value):
+        try:
+            transp = int(self.horizontalSlider_4.value())
+            img = Image.open(self.new_file_name)
+            img = img.filter(ImageFilter.BLUR)  # использование ImageFilter.BLUR для размытия
+            img.save(self.new_file_name)
+            self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+            self.izobr.setPixmap(self.pixmap)
+        except Exception as e:
+            print(e)
+
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_R:
             print(f"Обрезка: x={self.x}, y={self.y}, x1={self.x1}, y1={self.y1}")
             try:
+                print('oi')
                 with Image.open(self.new_file_name) as im:
-                    cropped_img = im.crop(self.x, self.y, self.x1, self.y1)
+                    cropped_img = im.crop((self.x, self.y, self.x1, self.y1))
                     cropped_img.save(self.new_file_name)
-                    self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                    self.pixmap = QPixmap(self.new_file_name)
                     self.izobr.setPixmap(self.pixmap)
-                    ImageProcessor.tec_tame = datetime.now()
+                    ImageProcessor.tec_tame = datetime.datetime.now()
 
             except Exception as e:
                 print(e)
 
-    # code
     def mousePressEvent1(self, event):
         print(event.button())
         try:
@@ -144,29 +156,19 @@ class ImageProcessor(QDialog):
         except Exception as e:
             print(e)
 
-    # def obrezka(self):
-    #     self.mouse()
-    #     try:
-    #         with Image.open(self.new_file_name) as im:
-    #             cropped_img = im.crop(self.x.split(), (self.y)
-    #             cropped_img.save(self.new_file_name)
-    #             self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
-    #             self.izobr.setPixmap(self.pixmap)
-    #             ImageProcessor.tec_tame = datetime.now()
-    #
-    #     except Exception as e:
-    #         print(e)
-
-
-    def yark_yvelich(self, n):
-        self.n = self.n + 0.5
+    def increaseBrightness(self):
+        try:
+            self.adjustBrightness()
+            self.factor += 0.2
+        except Exception as e:
+            print(e)
 
     def yark_yvelich_1(self):
         try:
             with Image.open(self.new_file_name) as im:
-                self.enhancer = ImageEnhance.Contrast(im)
-                self.factor = 1.5
-                self.comBY_yvel.clicked.connect(lambda: self.yark_yvelich(self.factor))
+                self.enhancer = ImageEnhance.Brightness(im)
+                self.factor = 1
+                self.comBY_yvel.clicked.connect(lambda: self.comBY_yvel(self.factor))
                 self.im_output = self.enhancer.enhance(self.factor)
                 self.im_output.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
@@ -174,6 +176,46 @@ class ImageProcessor(QDialog):
         except Exception as e:
             print(e)
 
+    def contrast_f(self):
+        try:
+            self.adjustBrightness()
+            self.factor += 0.2
+        except Exception as e:
+            print(e)
+
+    def contrast_yvelich_1(self):
+        try:
+            with Image.open(self.new_file_name) as im:
+                self.enhancer = ImageEnhance.Contrast(im)
+                self.factor = 1
+                self.comBY_yvel.clicked.connect(lambda: self.contr_yvelich(self.factor))
+                self.im_output = self.enhancer.enhance(self.factor)
+                self.im_output.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+        except Exception as e:
+            print(e)
+
+    def rezcost(self):
+        try:
+            with Image.open(self.new_file_name) as im:
+                enhancer = ImageEnhance.Sharpness(im)
+                factor = 1
+                self.comBY_yvel.clicked.connect(lambda: self.recz_yvel(self.factor))
+                self.im_s_1 = enhancer.enhance(factor)
+                self.im_s_1.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+
+        except Exception as e:
+            print(e)
+
+    def inrezcost(self):
+        try:
+            self.adjustBrightness()
+            self.factor += 0.2
+        except Exception as e:
+            print(e)
 
     def applySepia(self):
         try:
@@ -250,8 +292,7 @@ class ImageProcessor(QDialog):
     def orig_im(self):
         try:
             with Image.open(self.filename) as im:
-
-                self.im.save(self.new_file_name)
+                im.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
         except Exception as e:
@@ -280,6 +321,9 @@ class ImageProcessor(QDialog):
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
                 ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = 'blue filter'
+
+
 
         except Exception as e:
             print(e)
@@ -295,8 +339,6 @@ class ImageProcessor(QDialog):
                 self.izobr.setPixmap(self.pixmap)
         except Exception as e:
             print(e)
-
-
 
     def Negative(self):
         try:
@@ -314,6 +356,8 @@ class ImageProcessor(QDialog):
                 im.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = 'negative'
 
         except Exception as e:
             print(e)
@@ -324,24 +368,39 @@ class ImageProcessor(QDialog):
         img.save(QFileDialog.getSaveFileName(self, 'Выберите картинку', '', 'Картинки (*.jpg)')[0])
 
     def rotate(self):
-        with Image.open(self.new_file_name) as im:
-
+        im = Image.open(self.new_file_name)
+        try:
             if self.sender() is self.pravod:
                 self.image = im.rotate(90)
-
             if self.sender() is self.pravos:
                 self.image = im.rotate(180)
             if self.sender() is self.levod:
                 self.image = im.rotate(270)
             self.image.save(self.new_file_name)
             self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+            self.izobr.setPixmap(self.pixmap)
+        except Exception as e:
+            print(e)
+
+    def z(self):
+        with Image.open(self.new_file_name) as im:
+            try:
+                print(76)
+                self.image = im.transpose(Image.FLIP_LEFT_RIGHT)
+                self.image.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+            except Exception as e:
+                print(e)
 
     def open_second_form(self):
         self.second_form = SecondForm(self, "Данные для второй формы")
         self.second_form.show()
 
-
-
+    def eventFilter(self, obj, event):
+        if event.type() == event.ShortcutOverride:
+            return True
+        return super().eventFilter(obj, event)
 
 class SecondForm(QWidget):
     def __init__(self, *args):
@@ -349,9 +408,10 @@ class SecondForm(QWidget):
         self.initUI()
         self.con = sqlite3.connect("db.sqlite")
         self.filter_bd()
+
         self.loadTable('images2.csv')
         self.history_bd()
-
+        self.pushButton_alf.clicked.connect(self.sortirovka)
 
     def initUI(self):
         self.setWindowTitle('Вторая форма')
@@ -388,12 +448,11 @@ class SecondForm(QWidget):
             print(e)
 
     def history_bd(self):
-        #print("h")
         try:
             self.cursor = self.con.cursor()
             self.query = f'''INSERT
                         INTO history(time, operation)
-                        VALUES('{ImageProcessor.tec_tame}', '{"erger"}')'''
+                        VALUES('{ImageProcessor.tec_tame}', '{ImageProcessor.difference}')'''
             self.new_operation = self.query
             self.cur.execute(self.query)
             print(self.query)
@@ -404,14 +463,34 @@ class SecondForm(QWidget):
                 for i, elem in enumerate(result):
                     for j, val in enumerate(elem):
                         self.tableWidget_2.setItem(i, j, QTableWidgetItem(str(val)))
+                        self.con.commit()
             except Exception as e:
                 print(e)
-            self.con.commit()
-
 
         except Exception as e:
             print(e)
 
+    def sortirovka(self):
+        try:
+            self.cursor = self.con.cursor()
+            self.query = (f'''SELECT    time, operation FROM
+        history ORDER BY operation''')
+            self.new_operation = self.query
+            self.cur.execute(self.query)
+            print(self.query)
+            try:
+                print(8)
+                result = self.cur.execute("Select * from history").fetchall()
+                self.tableWidget_2.setRowCount(len(result))
+                self.tableWidget_2.setColumnCount(len(result[0]))
+                for i, elem in enumerate(result):
+                    for j, val in enumerate(elem):
+                        self.tableWidget_2.setItem(i, j, QTableWidgetItem(str(val)))
+                        self.con.commit()
+            except Exception as e:
+                print(e)
+        except Exception as e:
+            print(e)
 
 if __name__ == "__main__":
     print(datetime.datetime.now())

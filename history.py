@@ -1,113 +1,43 @@
-# from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
-# from PyQt5.QtCore import QTimer
-# from PyQt5.QtGui import QCursor
-#
-#
-# class MainWindow(QMainWindow):
-#     def __init__(self):
-#         super().__init__()
-#
-#         self.label = QLabel()
-#         self.setCentralWidget(self.label)
-#
-#         self.timer = QTimer()
-#         self.timer.timeout.connect(self.update_cursor_position)
-#         self.timer.start(100)  # Обновление каждые 100 мс
-#
-#     def update_cursor_position(self):
-#         cursor_pos = QCursor.pos()
-#         self.label.setText(f'Координаты курсора: x={cursor_pos.x()}, y={cursor_pos.y()}')
-#
-#
-# if __name__ == '__main__':
-#     app = QApplication([])
-#     window = MainWindow()
-#     window.show()
-#     app.exec_()
-
-# import sys
-# from PyQt5.QtCore import Qt
-# from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
-#
-#
-# class MyWindow(QWidget):
-#     def __init__(self):
-#         super().__init__()
-#
-#         self.initUI()
-#
-#     def initUI(self):
-#         self.setGeometry(300, 300, 300, 200)
-#         self.setWindowTitle('WheelEvent')
-#
-#         btn = QPushButton('Click me!', self)
-#         btn.setGeometry(100, 80, 100, 30)
-#         btn.clicked.connect(self.buttonClicked)
-#
-#         self.show()
-#
-#     def buttonClicked(self):
-#         print('Button clicked!')
-#
-#     def wheelEvent(self, event):
-#         numDegrees = event.angleDelta().y() / 8
-#         numSteps = numDegrees / 15
-#
-#         print('numDegrees =', numDegrees, 'numSteps =', numSteps)
-#
-#
-# if __name__ == '__main__':
-#     app = QApplication(sys.argv)
-#     ex = MyWindow()
-#     sys.exit(app.exec_())
-# import sys
-# from PyQt5.QtCore import Qt
-# from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
-#
-#
-# class MyWindow(QWidget):
-#     def __init__(self):
-#         super().__init__()
-#
-#         self.initUI()
-#
-#     def initUI(self):
-#         self.setGeometry(300, 300, 300, 200)
-#         self.setWindowTitle('MousePressEvent')
-#
-#         btn = QPushButton('Click me!', self)
-#         btn.setGeometry(100, 80, 100, 30)
-#         btn.clicked.connect(self.buttonClicked)
-#
-#         self.show()
-#
-#     def buttonClicked(self):
-#         print('Button clicked!')
-#
-#     def mousePressEvent(self, event):
-#         if event.button() == Qt.LeftButton:
-#             print('Left mouse button pressed')
-#         elif event.button() == Qt.RightButton:
-#             print('Right mouse button pressed')
-#         elif event.button() == Qt.MidButton:
-#             print('Middle mouse button pressed')
-#
-#
-# if __name__ == '__main__':
-#     app = QApplication(sys.argv)
-#     ex = MyWindow()
-#     sys.exit(app.exec_())
-
 from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QMouseEvent
+from PyQt5.QtGui import QKeyEvent, QMouseEvent, QPixmap
+from PIL import Image
 
 class MyWidget(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Пример")
+        self.setGeometry(100, 100, 800, 600)
+        self.show()
+        self.keyPressEvent = self.mousePressEvent()
+
+    def keyPressEvent(self, event: QKeyEvent):
+        if event.key() == Qt.Key_R:
+            print(f"Обрезка: x={self.x}, y={self.y}, x1={self.x1}, y1={self.y1}")
+            try:
+                print('oi')
+                with Image.open(self.new_file_name) as im:
+                    cropped_img = im.crop((self.x, self.y, self.x1, self.y1))
+                    cropped_img.save(self.new_file_name)
+                    self.pixmap = QPixmap(self.new_file_name)
+                    self.izobr.setPixmap(self.pixmap)
+
+
+            except Exception as e:
+                print(e)
+
     def mousePressEvent(self, event: QMouseEvent):
-        if event.button() == Qt.LeftButton:
-            x = event.x()
-            y = event.y()
-            print(f"Координаты нажатия: x={x}, y={y}")
+        print(event.button())
+        try:
+            if event.button() == Qt.LeftButton:
+                self.x = event.x()
+                self.y = event.y()
+            if event.button() == Qt.RightButton:
+                self.x1 = event.x()
+                self.y1 = event.y()
+            print(f"Координаты нажатия: x={self.x}, y={self.y}, x1={self.x1}, y1={self.y1}")
+        except Exception as e:
+            print(e)
 
 # Создаем приложение Qt
 app = QApplication([])
@@ -115,10 +45,5 @@ app = QApplication([])
 # Создаем экземпляр виджета
 widget = MyWidget()
 
-# Устанавливаем размер виджета
-widget.resize(800, 600)
-
-# Отображаем виджет
-widget.show()
-
+# Запускаем главный цикл приложения
 app.exec()

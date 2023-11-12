@@ -72,8 +72,8 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>360</y>
-     <width>120</width>
+     <y>380</y>
+     <width>101</width>
      <height>141</height>
     </rect>
    </property>
@@ -130,6 +130,17 @@
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="QPushButton" name="zerc">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 184);
+font: 75 8pt &quot;Segoe Print&quot;;</string>
+      </property>
+      <property name="text">
+       <string>отзеркалить</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QLabel" name="izobr">
@@ -148,7 +159,7 @@
   <widget class="QWidget" name="gridLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>120</x>
      <y>420</y>
      <width>81</width>
      <height>83</height>
@@ -191,22 +202,12 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>80</y>
-     <width>311</width>
+     <y>120</y>
+     <width>371</width>
      <height>43</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_3">
-    <item>
-     <widget class="QCommandLinkButton" name="comButtont_0">
-      <property name="styleSheet">
-       <string notr="true">font: 75 8pt &quot;Segoe Print&quot;;</string>
-      </property>
-      <property name="text">
-       <string>уменьшить</string>
-      </property>
-     </widget>
-    </item>
     <item>
      <widget class="QPushButton" name="yarkost">
       <property name="styleSheet">
@@ -234,19 +235,12 @@ font: 75 8pt &quot;Segoe Print&quot;;</string>
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>130</y>
-     <width>433</width>
+     <y>160</y>
+     <width>371</width>
      <height>41</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_4">
-    <item>
-     <widget class="QCommandLinkButton" name="commandLinkButton_3">
-      <property name="text">
-       <string>CommandLinkButton</string>
-      </property>
-     </widget>
-    </item>
     <item>
      <widget class="QPushButton" name="contrast">
       <property name="styleSheet">
@@ -259,9 +253,12 @@ font: 75 8pt &quot;Segoe Print&quot;;</string>
      </widget>
     </item>
     <item>
-     <widget class="QCommandLinkButton" name="commandLinkButton_4">
+     <widget class="QCommandLinkButton" name="contr_yvelich">
+      <property name="styleSheet">
+       <string notr="true">font: 75 8pt &quot;Segoe Print&quot;;</string>
+      </property>
       <property name="text">
-       <string>CommandLinkButton</string>
+       <string>увеличить</string>
       </property>
      </widget>
     </item>
@@ -270,23 +267,13 @@ font: 75 8pt &quot;Segoe Print&quot;;</string>
   <widget class="QWidget" name="verticalLayoutWidget_2">
    <property name="geometry">
     <rect>
-     <x>220</x>
-     <y>419</y>
+     <x>210</x>
+     <y>420</y>
      <width>81</width>
-     <height>83</height>
+     <height>81</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
-    <item>
-     <widget class="QPushButton" name="sepeia">
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(255, 153, 85);</string>
-      </property>
-      <property name="text">
-       <string>сепия</string>
-      </property>
-     </widget>
-    </item>
     <item>
      <widget class="QPushButton" name="hb">
       <property name="styleSheet">
@@ -368,8 +355,8 @@ color: rgb(255, 255, 255);</string>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>190</y>
+     <x>10</x>
+     <y>250</y>
      <width>221</width>
      <height>31</height>
     </rect>
@@ -385,7 +372,7 @@ color: rgb(255, 255, 255);</string>
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>240</y>
+     <y>320</y>
      <width>441</width>
      <height>21</height>
     </rect>
@@ -401,7 +388,7 @@ color: rgb(255, 255, 255);</string>
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>270</y>
+     <y>340</y>
      <width>441</width>
      <height>21</height>
     </rect>
@@ -417,7 +404,7 @@ color: rgb(255, 255, 255);</string>
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>520</y>
+     <y>540</y>
      <width>291</width>
      <height>16</height>
     </rect>
@@ -430,7 +417,7 @@ color: rgb(255, 255, 255);</string>
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>550</y>
+     <y>570</y>
      <width>361</width>
      <height>61</height>
     </rect>
@@ -481,6 +468,84 @@ font: 75 8pt &quot;Segoe Print&quot;;</string>
      </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QPushButton" name="sepeia">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>80</y>
+     <width>71</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255, 153, 85);</string>
+   </property>
+   <property name="text">
+    <string>сепия</string>
+   </property>
+  </widget>
+  <widget class="QSlider" name="horizontalSlider_4">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>80</y>
+     <width>271</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget_4">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>200</y>
+     <width>371</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_5">
+    <item>
+     <widget class="QPushButton" name="rezc_butoon">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 184);
+font: 75 8pt &quot;Segoe Print&quot;;</string>
+      </property>
+      <property name="text">
+       <string>резкость</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QCommandLinkButton" name="recz_yvel">
+      <property name="styleSheet">
+       <string notr="true">font: 75 8pt &quot;Segoe Print&quot;;</string>
+      </property>
+      <property name="text">
+       <string>увеличить</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>300</y>
+     <width>231</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 75 9pt &quot;Segoe Print&quot;;</string>
+   </property>
+   <property name="text">
+    <string>для каждого пункта зажимайте R</string>
+   </property>
   </widget>
  </widget>
  <resources/>
