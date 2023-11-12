@@ -9,7 +9,6 @@ import sqlite3
 import csv
 import datetime
 
-
 class ImageProcessor(QDialog):
 
     def __init__(self):
