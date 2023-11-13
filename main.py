@@ -5,8 +5,11 @@ from PyQt5.QtGui import QPixmap, QImage, QColor, qRgb, QTransform, QMouseEvent,Q
 from PyQt5.QtCore import Qt
 from PyQt5 import uic, QtCore
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps, ImageDraw, ImageEnhance
+from pillow_lut import rgb_color_enhance
+from PIL.ImageFilter import Color3DLUT, RankFilter, MedianFilter, MinFilter, MaxFilter
 import sqlite3
 import csv
+
 import datetime
 
 class ImageProcessor(QDialog):
@@ -30,7 +33,6 @@ class ImageProcessor(QDialog):
         self.zerc.clicked.connect(self.z)
         self.izobr.setPixmap(self.pixmap)
         self.izobr.setStyleSheet("background-color: white;")
-        self.izobr.mousePressEvent = self.mousePressEvent1
         self.angle = 0
         self.horizontalSlider_3.setMinimum(0)
         self.horizontalSlider_3.setMaximum(255)
@@ -67,12 +69,24 @@ class ImageProcessor(QDialog):
         self.cursor = self.con.cursor()
         self.cursor.execute(self.query)
         self.con.commit()
-        self.x = self.y = self.x1 = self.y1 = 0
         shortcut = QShortcut(QKeySequence("Ctrl+S"), self)
         shortcut.activated.connect(self.saveImage)
         self.comBY_yvel.clicked.connect(self.increaseBrightness)
         self.contr_yvelich.clicked.connect(self.contrast_f)
         self.recz_yvel.clicked.connect(self.inrezcost)
+        self.but_lychi.clicked.connect(self.luchi_f)
+        self.but_snow.clicked.connect(self.snow_f)
+        self.b_night.clicked.connect(self.night_f)
+        self.b_summer.clicked.connect(self.summer_f)
+        self.b_H2O.clicked.connect(self.H2O_f)
+        self.b_gold.clicked.connect(self.gold_f)
+        self.b_dreems.clicked.connect(self.dreems_f)
+        self.but_contur.clicked.connect(self.contur_f1)
+        self.but_contur1.clicked.connect(self.contur_f)
+        self.but_contur2.clicked.connect(self.contur_f2)
+        self.but_contur3.clicked.connect(self.contur_f3)
+        self.contrast.clicked.connect(self.contrast_yvelich_1)
+
 
     def loadImage(self, path):
         self.image = Image.open(path).resize(430, 430)
@@ -93,7 +107,7 @@ class ImageProcessor(QDialog):
         try:
             with Image.open(self.new_file_name) as im:
                 self.enhancer = ImageEnhance.Contrast(im)
-                self.factor = 2  # gives original image
+                self.factor = 2
                 self.im_output = self.enhancer.enhance(self.factor)
                 self.im_output.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
@@ -124,34 +138,6 @@ class ImageProcessor(QDialog):
             img.save(self.new_file_name)
             self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
             self.izobr.setPixmap(self.pixmap)
-        except Exception as e:
-            print(e)
-
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_R:
-            print(f"Обрезка: x={self.x}, y={self.y}, x1={self.x1}, y1={self.y1}")
-            try:
-                print('oi')
-                with Image.open(self.new_file_name) as im:
-                    cropped_img = im.crop((self.x, self.y, self.x1, self.y1))
-                    cropped_img.save(self.new_file_name)
-                    self.pixmap = QPixmap(self.new_file_name)
-                    self.izobr.setPixmap(self.pixmap)
-                    ImageProcessor.tec_tame = datetime.datetime.now()
-
-            except Exception as e:
-                print(e)
-
-    def mousePressEvent1(self, event):
-        print(event.button())
-        try:
-            if event.button() == Qt.LeftButton:
-                self.x = event.x()
-                self.y = event.y()
-            if event.button() == Qt.RightButton:
-                self.x1 = event.x()
-                self.y1 = event.y()
-            print(f"Координаты нажатия: x={self.x}, y={self.y}, x1={self.x1}, y1={self.y1}")
         except Exception as e:
             print(e)
 
@@ -361,6 +347,17 @@ class ImageProcessor(QDialog):
         except Exception as e:
             print(e)
 
+
+    def H2O_f(self):
+        try:
+            with Image.open(self.new_file_name) as img:
+                self.dimg = img.filter(RankFilter(size=9, rank=3))
+                self.dimg.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+        except Exception as e:
+            print(e)
+
     def saveImage(self):
         print(0)
         img = Image.open(self.new_file_name)
@@ -381,16 +378,149 @@ class ImageProcessor(QDialog):
         except Exception as e:
             print(e)
 
+    def luchi_f(self):
+        try:
+            with Image.open(self.new_file_name) as img:
+                def transform(r, g, b):
+                    r, g, b = (max(r, g, b), g, min(r, g, b))
+                    avg_v = r * 0.2126 + g * 0.7152 + b * 0.0722
+                    r += (r - avg_v) * 0.6
+                    g += (g - avg_v) * 0.6
+                    b += (b - avg_v) * 0.6
+                    return r, g, b
+
+                self.lut = Color3DLUT.generate(17, transform)
+                self.filtered_img = img.filter(self.lut)
+                self.filtered_img.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+
+        except Exception as e:
+            print(e)
+
+    def night_f(self):
+        try:
+            with Image.open(self.new_file_name) as img:
+                self.table = [(0,1 ,1), (0, 0, 1), (0,0, 0), (0,0, 1),
+                         (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0)]
+                self.lut = Color3DLUT(2, self.table)
+                self.filtered_img = img.filter(self.lut)
+                self.filtered_img.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+
+        except Exception as e:
+            print(e)
+
+    def snow_f(self):
+        try:
+            with Image.open(self.new_file_name) as img:
+                self.lut = rgb_color_enhance(11, exposure=1, contrast=0.3, vibrance=-0.2, warmth=0.3)
+                self.filtered_img = img.filter(self.lut)
+                self.filtered_img.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+
+        except Exception as e:
+            print(e)
+
+    def gold_f(self):
+        try:
+            with Image.open(self.new_file_name) as img:
+                self.dimg = img.filter(MaxFilter(size=7))
+                self.dimg.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+        except Exception as e:
+            print(e)
+
+    def summer_f(self):
+        try:
+            with Image.open(self.new_file_name) as img:
+                self.lut = rgb_color_enhance(11, exposure=0.1, contrast=0.2, vibrance=0.2, warmth=0.57)
+                self.filtered_img = img.filter(self.lut)
+                self.filtered_img.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+
+        except Exception as e:
+            print(e)
+
     def z(self):
         with Image.open(self.new_file_name) as im:
             try:
-                print(76)
                 self.image = im.transpose(Image.FLIP_LEFT_RIGHT)
                 self.image.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
             except Exception as e:
                 print(e)
+
+
+    def contur_f(self):
+        try:
+            with Image.open(self.filename) as im:
+                self.img_gray = im.convert("L")
+                self.edges = self.img_gray.filter(ImageFilter.FIND_EDGES)
+                self.edges.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+        except Exception as e:
+            print(e)
+
+    def contur_f1(self):
+        try:
+            with Image.open(self.filename) as im:
+                self.img_gray = im.convert("L")
+                self.img_gray_smooth = self.img_gray.filter(ImageFilter.SMOOTH)
+                self.edges_smooth = self.img_gray_smooth.filter(ImageFilter.FIND_EDGES)
+                self.edges_smooth.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+        except Exception as e:
+                print(e)
+
+    def contur_f2(self):
+        try:
+            with Image.open(self.filename) as im:
+                self.img_gray = im.convert("L")
+                self.img_gray_smooth = self.img_gray.filter(ImageFilter.SMOOTH)
+                self.emboss = self.img_gray_smooth.filter(ImageFilter.EMBOSS)
+
+                self.emboss.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+        except Exception as e:
+            print(e)
+
+    def contur_f3(self):
+        try:
+            with Image.open(self.filename) as im:
+                img_cat_gray = im.convert("L")
+                threshold = 100
+                self.img_cat_threshold = img_cat_gray.point(
+                    lambda x: 255 if x > threshold else 0)
+                self.img_cat_threshold.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+
+        except Exception as e:
+            print(e)
+
+
+    def dreems_f(self):
+        try:
+            with Image.open(self.new_file_name) as img:
+                self.table = [(0,1 ,1), (1, 0, 1), (0,1, 0), (1,0, 0),
+                         (0, 1, 0), (1, 1, 0), (1, 1, 0), (0, 0, 0)]
+                self.lut = Color3DLUT(2, self.table)
+                self.filtered_img = img.filter(self.lut)
+                self.filtered_img.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+
+        except Exception as e:
+            print(e)
 
     def open_second_form(self):
         self.second_form = SecondForm(self, "Данные для второй формы")
@@ -497,3 +627,4 @@ if __name__ == "__main__":
     window = ImageProcessor()
     window.show()
     sys.exit(app.exec_())
+
