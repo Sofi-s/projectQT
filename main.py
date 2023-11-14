@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QDialog, QPushButton, QSlider, QVBoxLayout, QWidget, QFileDialog, QLabel, \
-    QTableWidgetItem,QCommandLinkButton,QShortcut
-from PyQt5.QtGui import QPixmap, QImage, QColor, qRgb, QTransform, QMouseEvent,QKeySequence
+    QTableWidgetItem, QCommandLinkButton, QShortcut
+from PyQt5.QtGui import QPixmap, QImage, QColor, qRgb, QTransform, QMouseEvent, QKeySequence
 from PyQt5.QtCore import Qt
 from PyQt5 import uic, QtCore
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps, ImageDraw, ImageEnhance
@@ -11,6 +11,7 @@ import sqlite3
 import csv
 
 import datetime
+
 
 class ImageProcessor(QDialog):
 
@@ -45,7 +46,7 @@ class ImageProcessor(QDialog):
         self.horizontalSlider_2.setMaximum(150)
         self.push_bd.clicked.connect(self.open_second_form)
         self.comBY_yvel.clicked.connect(lambda: self.yark_yvelich_1)
-        self.yarkost.clicked.connect(self. adjustBrightness)
+        self.yarkost.clicked.connect(self.adjustBrightness)
         self.pushBu_orig.clicked.connect(self.orig_im)
         tec_tame = 0
         difference = ''
@@ -87,7 +88,6 @@ class ImageProcessor(QDialog):
         self.but_contur3.clicked.connect(self.contur_f3)
         self.contrast.clicked.connect(self.contrast_yvelich_1)
 
-
     def loadImage(self, path):
         self.image = Image.open(path).resize(430, 430)
 
@@ -112,9 +112,10 @@ class ImageProcessor(QDialog):
                 self.im_output.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = 'transparency filter'
         except Exception as e:
             print(e)
-
 
     def adjustTransparency(self, value):
         try:
@@ -125,6 +126,8 @@ class ImageProcessor(QDialog):
             img.save(self.new_file_name)
             self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
             self.izobr.setPixmap(self.pixmap)
+            ImageProcessor.tec_tame = datetime.datetime.now()
+            ImageProcessor.difference = 'transparency'
 
 
         except Exception as e:
@@ -138,6 +141,9 @@ class ImageProcessor(QDialog):
             img.save(self.new_file_name)
             self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
             self.izobr.setPixmap(self.pixmap)
+            ImageProcessor.tec_tame = datetime.datetime.now()
+            ImageProcessor.difference = 'razmitie'
+
         except Exception as e:
             print(e)
 
@@ -145,6 +151,8 @@ class ImageProcessor(QDialog):
         try:
             self.adjustBrightness()
             self.factor += 0.2
+            ImageProcessor.tec_tame = datetime.datetime.now()
+            ImageProcessor.difference = 'Brightness'
         except Exception as e:
             print(e)
 
@@ -165,6 +173,8 @@ class ImageProcessor(QDialog):
         try:
             self.adjustBrightness()
             self.factor += 0.2
+            ImageProcessor.tec_tame = datetime.datetime.now()
+            ImageProcessor.difference = 'contrast filter'
         except Exception as e:
             print(e)
 
@@ -191,17 +201,16 @@ class ImageProcessor(QDialog):
                 self.im_s_1.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
-
         except Exception as e:
             print(e)
-
     def inrezcost(self):
         try:
             self.adjustBrightness()
             self.factor += 0.2
+            ImageProcessor.tec_tame = datetime.datetime.now()
+            ImageProcessor.difference = 'rezcost'
         except Exception as e:
             print(e)
-
     def applySepia(self):
         try:
             with Image.open(self.new_file_name) as im:
@@ -228,6 +237,8 @@ class ImageProcessor(QDialog):
                 im.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = 'sepea filter'
         except Exception as e:
             print(e)
 
@@ -260,17 +271,21 @@ class ImageProcessor(QDialog):
             img.save(self.new_file_name)
             self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
             self.izobr.setPixmap(self.pixmap)
+            ImageProcessor.tec_tame = datetime.datetime.now()
+            ImageProcessor.difference = 'sepea slaider filter'
         except Exception as e:
             print(e)
 
     def white_black(self):
         try:
-             with Image.open(self.new_file_name) as img:
-                 gray_img = img.convert("L")
-                 gray_img.save(self.new_file_name)
-                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
-                 self.izobr.setPixmap(self.pixmap)
-                 ImageProcessor.tec_tame = datetime.now()
+            with Image.open(self.new_file_name) as img:
+                gray_img = img.convert("L")
+                gray_img.save(self.new_file_name)
+                self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
+                self.izobr.setPixmap(self.pixmap)
+                ImageProcessor.tec_tame = datetime.now()
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = 'gray filter'
         except Exception as e:
             print(e)
 
@@ -280,9 +295,10 @@ class ImageProcessor(QDialog):
                 im.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = 'open first filter'
         except Exception as e:
             print(e)
-
 
     def applyRedEffect(self):
         try:
@@ -293,6 +309,8 @@ class ImageProcessor(QDialog):
                 self.red_merge.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = 'red filter'
         except Exception as e:
             print(e)
 
@@ -307,9 +325,6 @@ class ImageProcessor(QDialog):
                 self.izobr.setPixmap(self.pixmap)
                 ImageProcessor.tec_tame = datetime.datetime.now()
                 ImageProcessor.difference = 'blue filter'
-
-
-
         except Exception as e:
             print(e)
 
@@ -322,6 +337,8 @@ class ImageProcessor(QDialog):
                 self.green_merge.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = 'green filter'
         except Exception as e:
             print(e)
 
@@ -347,7 +364,6 @@ class ImageProcessor(QDialog):
         except Exception as e:
             print(e)
 
-
     def H2O_f(self):
         try:
             with Image.open(self.new_file_name) as img:
@@ -355,6 +371,8 @@ class ImageProcessor(QDialog):
                 self.dimg.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = 'H2O'
         except Exception as e:
             print(e)
 
@@ -368,10 +386,16 @@ class ImageProcessor(QDialog):
         try:
             if self.sender() is self.pravod:
                 self.image = im.rotate(90)
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = '90 right'
             if self.sender() is self.pravos:
                 self.image = im.rotate(180)
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = '180'
             if self.sender() is self.levod:
                 self.image = im.rotate(270)
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = '90 left'
             self.image.save(self.new_file_name)
             self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
             self.izobr.setPixmap(self.pixmap)
@@ -394,21 +418,23 @@ class ImageProcessor(QDialog):
                 self.filtered_img.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
-
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = 'morhihg'
         except Exception as e:
             print(e)
 
     def night_f(self):
         try:
             with Image.open(self.new_file_name) as img:
-                self.table = [(0,1 ,1), (0, 0, 1), (0,0, 0), (0,0, 1),
-                         (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0)]
+                self.table = [(0, 1, 1), (0, 0, 1), (0, 0, 0), (0, 0, 1),
+                              (0, 0, 0), (0, 0, 0), (0, 0, 0), (0, 0, 0)]
                 self.lut = Color3DLUT(2, self.table)
                 self.filtered_img = img.filter(self.lut)
                 self.filtered_img.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
-
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = 'night'
         except Exception as e:
             print(e)
 
@@ -420,7 +446,8 @@ class ImageProcessor(QDialog):
                 self.filtered_img.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
-
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = 'snow'
         except Exception as e:
             print(e)
 
@@ -431,6 +458,8 @@ class ImageProcessor(QDialog):
                 self.dimg.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = 'gold'
         except Exception as e:
             print(e)
 
@@ -442,7 +471,8 @@ class ImageProcessor(QDialog):
                 self.filtered_img.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
-
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = 'summer'
         except Exception as e:
             print(e)
 
@@ -453,9 +483,11 @@ class ImageProcessor(QDialog):
                 self.image.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = 'zerkalo'
+
             except Exception as e:
                 print(e)
-
 
     def contur_f(self):
         try:
@@ -465,6 +497,8 @@ class ImageProcessor(QDialog):
                 self.edges.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = 'contur pro'
         except Exception as e:
             print(e)
 
@@ -477,8 +511,10 @@ class ImageProcessor(QDialog):
                 self.edges_smooth.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = 'contur'
         except Exception as e:
-                print(e)
+            print(e)
 
     def contur_f2(self):
         try:
@@ -486,10 +522,11 @@ class ImageProcessor(QDialog):
                 self.img_gray = im.convert("L")
                 self.img_gray_smooth = self.img_gray.filter(ImageFilter.SMOOTH)
                 self.emboss = self.img_gray_smooth.filter(ImageFilter.EMBOSS)
-
                 self.emboss.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = 'white-black'
         except Exception as e:
             print(e)
 
@@ -503,21 +540,24 @@ class ImageProcessor(QDialog):
                 self.img_cat_threshold.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = 'tisnenie'
 
         except Exception as e:
             print(e)
 
-
     def dreems_f(self):
         try:
             with Image.open(self.new_file_name) as img:
-                self.table = [(0,1 ,1), (1, 0, 1), (0,1, 0), (1,0, 0),
-                         (0, 1, 0), (1, 1, 0), (1, 1, 0), (0, 0, 0)]
+                self.table = [(0, 1, 1), (1, 0, 1), (0, 1, 0), (1, 0, 0),
+                              (0, 1, 0), (1, 1, 0), (1, 1, 0), (0, 0, 0)]
                 self.lut = Color3DLUT(2, self.table)
                 self.filtered_img = img.filter(self.lut)
                 self.filtered_img.save(self.new_file_name)
                 self.pixmap = QPixmap(self.new_file_name).scaled(430, 430, QtCore.Qt.KeepAspectRatio)
                 self.izobr.setPixmap(self.pixmap)
+                ImageProcessor.tec_tame = datetime.datetime.now()
+                ImageProcessor.difference = 'dreems'
 
         except Exception as e:
             print(e)
@@ -530,7 +570,6 @@ class ImageProcessor(QDialog):
         if event.type() == event.ShortcutOverride:
             return True
         return super().eventFilter(obj, event)
-
 class SecondForm(QWidget):
     def __init__(self, *args):
         super().__init__()
@@ -584,7 +623,6 @@ class SecondForm(QWidget):
                         VALUES('{ImageProcessor.tec_tame}', '{ImageProcessor.difference}')'''
             self.new_operation = self.query
             self.cur.execute(self.query)
-            print(self.query)
             try:
                 result = self.cur.execute("Select * from history").fetchall()
                 self.tableWidget_2.setRowCount(len(result))
@@ -621,10 +659,10 @@ class SecondForm(QWidget):
         except Exception as e:
             print(e)
 
+
 if __name__ == "__main__":
     print(datetime.datetime.now())
     app = QApplication(sys.argv)
     window = ImageProcessor()
     window.show()
     sys.exit(app.exec_())
-
