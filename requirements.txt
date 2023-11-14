@@ -1,4 +1,4 @@
 PyQt5
 pillow
 pillow-lut
-import sqlite3
+sqlite3
